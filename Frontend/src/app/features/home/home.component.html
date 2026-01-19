@@ -1,1 +1,233 @@
-<p>home works!</p>
+<div class="pagina-inicio">
+    <!-- Contenedor principal del buscador con el título de bienvenida -->
+    <div class="contenedor-busqueda-principal">
+        <div class="barra-busqueda">
+            <span class="material-icons-outlined icono-lupa" (click)="buscarSonidos()"
+                style="cursor: pointer;">search</span>
+            <input type="text" class="input-busqueda" placeholder="Buscar..." [(ngModel)]="terminoBusqueda"
+                (keyup.enter)="buscarSonidos()">
+        </div>
+        <div>
+            ENCUENTRE TODO TIPO DE SONIDOS
+        </div>
+    </div>
+
+    <!-- Sección narrativa donde explico qué es el proyecto -->
+    <div class="seccion-info">
+        <div class="caja-info">
+            <h2>Que es sonora</h2>
+            <p>Sonora es un espacio web donde puedes encontrar gran variedad de sonidos de libre uso (Sin copyright).
+            </p>
+            <p>Una web desarrollada por 3 estudiantes de Desarrollo de aplicaciones web</p>
+            <p>Actualmente contamos con una variedad limitada de sonidos pero con tu ayuda podemos desarrollar una gran
+                web de plugins.</p>
+        </div>
+    </div>
+
+    <!-- Filtros por categoría para facilitar la navegación -->
+    <div class="seccion-categorias">
+        <h2 class="titulo-seccion">categorías</h2>
+        <div class="grid-categorias">
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Naturaleza']">Naturaleza</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Instrumento']">Instrumentos</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Grito']">Gritos</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Musica']">Musica</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Efectos']">Efectos especiales</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Notificacion']">Notificacion</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Transicion']">Transicion</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Silbido']">Silbidos</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Coche']">Coches</button>
+            <button class="boton-categoria" [routerLink]="['/categoria', 'Moto']">Motos</button>
+        </div>
+    </div>
+
+    <!-- Sección de Carruseles: Aquí muestro los sonidos destacados y por categorías -->
+    <div class="seccion-tops">
+        <h2 class="titulo-principal-tops">tops download</h2>
+
+        <!-- Carrusel 1: Sonidos Populares -->
+        <div class="grupo-carrusel">
+            <span class="titulo-pill">sonidos populares</span>
+            <div class="contenedor-carrusel">
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselPopulares)">
+                    <span class="material-icons-outlined">arrow_back_ios</span>
+                </button>
+                <div class="ventana-carrusel" #carruselPopulares>
+                    <div class="pista-carrusel">
+                        <!-- Genero una tarjeta por cada sonido en la lista de populares -->
+                        <div class="tarjeta-sonido" *ngFor="let sonido of listaSonidos; let i = index">
+                            <div class="controles-reproductor">
+                                <input type="range" class="slider-progreso"
+                                    [value]="sonidoActualIndice === i ? progresoActual : 0"
+                                    (input)="buscarPosicion($event)" step="0.1" min="0" max="100">
+                                <div class="botones-reproduccion"
+                                    style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                                    <span class="material-icons-outlined" (click)="replaySonido(sonido, i)"
+                                        title="Replay" style="cursor: pointer;">replay</span>
+                                    <span class="material-icons-outlined" (click)="toggleReproduccion(sonido, i)"
+                                        title="Play/Pause" style="cursor: pointer; font-size: 2rem;">
+                                        {{ sonidoActualIndice === i && estaReproduciendo ? 'pause_circle' :
+                                        'play_circle' }}
+                                    </span>
+                                    <span class="material-icons-outlined" (click)="stopSonido(sonido, i)" title="Stop"
+                                        style="cursor: pointer;">stop_circle</span>
+                                    <span class="material-icons-outlined" title="Download"
+                                        style="cursor: pointer;">download</span>
+                                </div>
+                            </div>
+                            <div class="info-sonido">
+                                <p>{{ sonido.titulo }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Muestro tarjetas vacías de 'Cargando' si aún no han llegado los datos de la API -->
+                        <div class="tarjeta-sonido" *ngIf="listaSonidos.length === 0">
+                            <div class="controles-reproductor">
+                                <input type="range" class="slider-progreso" value="0" disabled>
+                                <div class="botones-reproduccion"
+                                    style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                                    <span class="material-icons-outlined" style="opacity: 0.5;">replay</span>
+                                    <span class="material-icons-outlined"
+                                        style="opacity: 0.5; font-size: 2rem;">play_circle</span>
+                                    <span class="material-icons-outlined" style="opacity: 0.5;">stop_circle</span>
+                                    <span class="material-icons-outlined" style="opacity: 0.5;">download</span>
+                                </div>
+                            </div>
+                            <div class="info-sonido">
+                                <p>Cargando...</p>
+                            </div>
+                        </div>
+                        <div class="tarjeta-sonido" *ngIf="listaSonidos.length === 0"></div>
+                        <div class="tarjeta-sonido" *ngIf="listaSonidos.length === 0"></div>
+                    </div>
+                </div>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselPopulares)">
+                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Carrusel 2: Sonidos de Naturaleza -->
+        <div class="grupo-carrusel">
+            <span class="titulo-pill">sonidos de naturaleza</span>
+            <div class="contenedor-carrusel">
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselNaturaleza)">
+                    <span class="material-icons-outlined">arrow_back_ios</span>
+                </button>
+                <div class="ventana-carrusel" #carruselNaturaleza>
+                    <div class="pista-carrusel">
+                        <div class="tarjeta-sonido" *ngFor="let sonido of sonidosNaturaleza; let i = index">
+                            <div class="controles-reproductor">
+                                <input type="range" class="slider-progreso"
+                                    [value]="sonidoActualIndice === i ? progresoActual : 0"
+                                    (input)="buscarPosicion($event)" step="0.1" min="0" max="100">
+                                <div class="botones-reproduccion"
+                                    style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                                    <span class="material-icons-outlined" (click)="replaySonido(sonido, i)"
+                                        title="Replay" style="cursor: pointer;">replay</span>
+                                    <span class="material-icons-outlined" (click)="toggleReproduccion(sonido, i)"
+                                        title="Play/Pause" style="cursor: pointer; font-size: 2rem;">
+                                        {{ sonidoActualIndice === i && estaReproduciendo ? 'pause_circle' :
+                                        'play_circle' }}
+                                    </span>
+                                    <span class="material-icons-outlined" (click)="stopSonido(sonido, i)" title="Stop"
+                                        style="cursor: pointer;">stop_circle</span>
+                                    <span class="material-icons-outlined" title="Download"
+                                        style="cursor: pointer;">download</span>
+                                </div>
+                            </div>
+                            <div class="info-sonido">
+                                <p>{{ sonido.titulo }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselNaturaleza)">
+                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Carrusel 3: Sonidos de Instrumentos -->
+        <div class="grupo-carrusel">
+            <span class="titulo-pill">sonidos de instrumentos</span>
+            <div class="contenedor-carrusel">
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselInstrumentos)">
+                    <span class="material-icons-outlined">arrow_back_ios</span>
+                </button>
+                <div class="ventana-carrusel" #carruselInstrumentos>
+                    <div class="pista-carrusel">
+                        <div class="tarjeta-sonido" *ngFor="let sonido of sonidosInstrumentos; let i = index">
+                            <div class="controles-reproductor">
+                                <input type="range" class="slider-progreso"
+                                    [value]="sonidoActualIndice === i ? progresoActual : 0"
+                                    (input)="buscarPosicion($event)" step="0.1" min="0" max="100">
+                                <div class="botones-reproduccion"
+                                    style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                                    <span class="material-icons-outlined" (click)="replaySonido(sonido, i)"
+                                        title="Replay" style="cursor: pointer;">replay</span>
+                                    <span class="material-icons-outlined" (click)="toggleReproduccion(sonido, i)"
+                                        title="Play/Pause" style="cursor: pointer; font-size: 2rem;">
+                                        {{ sonidoActualIndice === i && estaReproduciendo ? 'pause_circle' :
+                                        'play_circle' }}
+                                    </span>
+                                    <span class="material-icons-outlined" (click)="stopSonido(sonido, i)" title="Stop"
+                                        style="cursor: pointer;">stop_circle</span>
+                                    <span class="material-icons-outlined" title="Download"
+                                        style="cursor: pointer;">download</span>
+                                </div>
+                            </div>
+                            <div class="info-sonido">
+                                <p>{{ sonido.titulo }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselInstrumentos)">
+                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Carrusel 4: Sonidos Extraños -->
+        <div class="grupo-carrusel">
+            <span class="titulo-pill">sonidos extraños</span>
+            <div class="contenedor-carrusel">
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselExtranos)">
+                    <span class="material-icons-outlined">arrow_back_ios</span>
+                </button>
+                <div class="ventana-carrusel" #carruselExtranos>
+                    <div class="pista-carrusel">
+                        <div class="tarjeta-sonido" *ngFor="let sonido of sonidosExtranos; let i = index">
+                            <div class="controles-reproductor">
+                                <input type="range" class="slider-progreso"
+                                    [value]="sonidoActualIndice === i ? progresoActual : 0"
+                                    (input)="buscarPosicion($event)" step="0.1" min="0" max="100">
+                                <div class="botones-reproduccion"
+                                    style="display: flex; gap: 5px; justify-content: center; align-items: center;">
+                                    <span class="material-icons-outlined" (click)="replaySonido(sonido, i)"
+                                        title="Replay" style="cursor: pointer;">replay</span>
+                                    <span class="material-icons-outlined" (click)="toggleReproduccion(sonido, i)"
+                                        title="Play/Pause" style="cursor: pointer; font-size: 2rem;">
+                                        {{ sonidoActualIndice === i && estaReproduciendo ? 'pause_circle' :
+                                        'play_circle' }}
+                                    </span>
+                                    <span class="material-icons-outlined" (click)="stopSonido(sonido, i)" title="Stop"
+                                        style="cursor: pointer;">stop_circle</span>
+                                    <span class="material-icons-outlined" title="Download"
+                                        style="cursor: pointer;">download</span>
+                                </div>
+                            </div>
+                            <div class="info-sonido">
+                                <p>{{ sonido.titulo }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselExtranos)">
+                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+# Dependencias
+node_modules/
+dist/
+
+# Variables de Entorno
+.env
+.env.local
+
+# IDEs y Editores
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Sistema
+Thumbs.db
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Multimedia (Opcional - si no se quieren versionar las subidas locales)
+/Backend/archivos/*
+!/Backend/archivos/.gitkeep

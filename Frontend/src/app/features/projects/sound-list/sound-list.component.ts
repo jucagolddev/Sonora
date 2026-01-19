@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './sound-list.component.html',
-  styleUrls: ['./sound-list.component.scss']
+
 })
 export class SoundListComponent {
 

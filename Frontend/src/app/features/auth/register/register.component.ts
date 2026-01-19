@@ -1,13 +1,81 @@
+/**
+ * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * -------------------------------------------------------------------
+ * Módulo: Componente de Registro
+ * Descripción: Gestiona el alta de nuevos usuarios en el sistema.
+ *              Valida formularios y datos antes de enviarlos al backend.
+ */
+
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-register',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
+  // Formulario reactivo para capturar múltiples datos del usuario
+  formularioRegistro: FormGroup;
 
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.formularioRegistro = this.fb.group({
+      nombre: ['', Validators.required],
+      apellidos: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
+      pais: ['', Validators.required],
+    });
+  }
+
+  /**
+   * Lógica de procesamiento de registro.
+   */
+  onSubmit() {
+    if (this.formularioRegistro.valid) {
+      const pass = this.formularioRegistro.get('password')?.value;
+      const confirm = this.formularioRegistro.get('confirmPassword')?.value;
+
+      // Validación extra en cliente: coincidencia de contraseñas
+      if (pass !== confirm) {
+        alert('Las contraseñas no coinciden.');
+        return;
+      }
+
+      /**
+       * TRANSFORMACIÓN DE DATOS
+       * El backend espera 'nombre_usuario'. Combinamos nombre y apellidos.
+       */
+      const datosParaBackend = {
+        nombre_usuario: `${this.formularioRegistro.value.nombre} ${this.formularioRegistro.value.apellidos}`,
+        email: this.formularioRegistro.value.email,
+        password: this.formularioRegistro.value.password
+      };
+
+      // Comunicación con el servicio
+      this.authService
+        .register(datosParaBackend)
+        .subscribe({
+          next: (res) => {
+            console.log('Registro exitoso:', res);
+            alert('¡Usuario registrado con éxito! Sesión iniciada automáticamente.');
+            this.router.navigate(['/']); 
+          },
+          error: (err) => {
+            console.error('Error en registro:', err);
+            const msg = err.error?.mensaje || 'No se pudo completar el registro. Verifica tu conexión o si el email ya existe.';
+            alert(msg);
+          }
+        });
+
+    } else {
+      alert('Por favor, completa todos los campos requeridos correctamente.');
+    }
+  }
 }

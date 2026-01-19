@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './admin-layout.component.html',
-  styleUrls: ['./admin-layout.component.scss']
+
 })
 export class AdminLayoutComponent {
 

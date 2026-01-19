@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './sound-upload.component.html',
-  styleUrls: ['./sound-upload.component.scss']
+
 })
 export class SoundUploadComponent {
 

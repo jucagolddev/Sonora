@@ -1,0 +1,13 @@
+# Dependencias
+node_modules/
+dist/
+
+# Entorno
+.env
+
+# Archivos de subida (local)
+archivos/*
+!archivos/.gitkeep
+
+# Logs
+*.log

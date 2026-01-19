@@ -6,7 +6,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './alert-msg.component.html',
-  styleUrls: ['./alert-msg.component.scss']
+
 })
 export class AlertMsgComponent {
 
