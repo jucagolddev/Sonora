@@ -27,11 +27,7 @@
                         <!-- Desplegable de categorías estilizado -->
                         <select class="control-formulario" formControlName="categoria">
                             <option value="" disabled selected>Seleccione categoria</option>
-                            <option value="naturaleza">Naturaleza</option>
-                            <option value="instrumentos">Instrumentos</option>
-                            <option value="gritos">Gritos</option>
-                            <option value="musica">Música</option>
-                            <option value="coches">Coches</option>
+                            <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
                         </select>
                     </div>
 

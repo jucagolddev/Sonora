@@ -29,8 +29,19 @@ export class SoundService {
    * Obtener todos los sonidos desde el API.
    * @returns Observable con el array de sonidos.
    */
-  getAllSounds(): Observable<Sound[]> {
-    return this.http.get<any>(this.apiUrl).pipe(
+  /**
+   * Obtener todos los sonidos desde el API.
+   * opcionalmente filtrados por categoría.
+   * @param categoria Filtro opcional por categoría
+   * @returns Observable con el array de sonidos.
+   */
+  getAllSounds(categoria?: string): Observable<Sound[]> {
+    let url = this.apiUrl;
+    if (categoria) {
+      url += `?categoria=${encodeURIComponent(categoria)}`;
+    }
+
+    return this.http.get<any>(url).pipe(
       map((response) => {
         // Mapeamos la respuesta del backend al formato de nuestra interfaz
         return response.audios.map((a: any) => ({
@@ -46,6 +57,15 @@ export class SoundService {
         }));
       }),
     );
+  }
+
+  /**
+   * Obtener lista única de categorías desde el backend.
+   */
+  getCategories(): Observable<string[]> {
+    return this.http
+      .get<any>(`${this.apiUrl}/categorias`)
+      .pipe(map((response) => response.categorias));
   }
 
   /**

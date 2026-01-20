@@ -1,6 +1,6 @@
 # 🎵 SONORA V2 - Plataforma de Gestión y Streaming de Audio
 
-> **Versión del Proyecto**: 2.0.0  
+> **Versión del Proyecto**: 2.1.0  
 > **Estado**: Estable / Producción Académica  
 > **Fecha de Actualización**: Enero 2026
 
@@ -8,7 +8,7 @@
 
 **Sonora V2** es una aplicación web moderna y robusta diseñada para la gestión, subida y reproducción de archivos de audio. Desarrollada con una arquitectura separada (Backend/Frontend), cumple con los más altos estándares académicos y profesionales, ofreciendo una experiencia de usuario fluida, un diseño responsivo de alta gama y una gestión segura de contenidos multimedia.
 
-El proyecto simula una plataforma profesional de tipo "SoundCloud" o "Spotify" simplificado, permitiendo a los usuarios registrarse, subir sus propias creaciones (MP3/MP4) y explorar una biblioteca de sonidos categorizados.
+El proyecto simula una plataforma profesional de tipo "SoundCloud" o "Spotify" simplificado, permitiendo a los usuarios registrarse, subir sus propias creaciones (MP3/MP4) y explorar una biblioteca de sonidos categorizados dinámicamente.
 
 ---
 
@@ -40,7 +40,11 @@ El proyecto utiliza tecnologías de vanguardia, asegurando escalabilidad y mante
 
 - **Motor**: MySQL 8.0 (vía XAMPP/MariaDB).
 - **Nombre de BD**: `Sonora`.
-- **Tablas Principales**: `usuarios`, `canciones`, `autor` (Relacional).
+- **Tablas Principales**:
+  - `usuarios`: Gestión de cuentas y roles.
+  - `canciones`: Catálogo de audios.
+  - `autor`: Perfiles artísticos.
+  - `categorias`: **[NUEVO]** Clasificación dinámica de sonidos.
 
 ---
 
@@ -57,8 +61,9 @@ Sigue estos pasos para desplegar el proyecto en un entorno local.
 ### Paso 1: Configuración de Base de Datos
 
 1.  Inicia el módulo **MySQL** en XAMPP.
-2.  Importa el script SQL (ubicado en `/sql` o proporcionado por separado) para crear la base de datos `Sonora` y sus tablas.
-3.  Verifica que el usuario `root` no tenga contraseña (o configura `.env` en el Backend).
+2.  Crea la base de datos `sonora` (si no existe).
+3.  **IMPORTANTE**: Importa el script `sonora.sql` ubicado en la carpeta `Backend/` para crear todas las tablas, incluyendo la nueva tabla de `categorias` y los datos de ejemplo.
+4.  Verifica que el usuario `root` no tenga contraseña (o configura `.env` en el Backend).
 
 ### Paso 2: Configuración del Backend
 
@@ -103,16 +108,17 @@ El proyecto sigue una estructura limpia y modular.
 ### 🌳 Árbol de Directorios (Resumido)
 
 ```
-c:/xampp/htdocs/Sonora2/
+c:/xampp/htdocs/Sonora/
 ├── 📂 Backend                 # Lógica del Servidor (API REST)
 │   ├── 📂 config              # Configuración de BD (db.ts)
 │   ├── 📂 controllers         # Lógica de negocio (controladores)
-│   │   ├── archivo_controller.ts  # Subida de ficheros
-│   │   ├── audio_controller.ts    # Gestión de canciones
+│   │   ├── archivo_controller.ts  # Subida de ficheros con categorías
+│   │   ├── audio_controller.ts    # Gestión de canciones y categorías
 │   │   └── auth_controller.ts     # Login/Registro
 │   ├── 📂 middleware          # Intermediarios (Auth JWT)
 │   ├── 📂 routes              # Definición de Endpoints
 │   ├── 📂 archivos            # Almacenamiento físico de MP3/MP4
+│   ├── sonora.sql             # Script de Base de Datos (Estructura + Datos)
 │   └── server.ts              # Punto de entrada (Entry Point)
 │
 ├── 📂 Frontend                # Aplicación Cliente (SPA)
@@ -121,10 +127,12 @@ c:/xampp/htdocs/Sonora2/
 │   │   │   ├── 📂 core        # Servicios Singleton
 │   │   │   │   ├── 📂 services
 │   │   │   │   │   ├── auth.service.ts  # Cliente HTTP Auth
-│   │   │   │   │   └── sound.service.ts # Cliente HTTP Audio
+│   │   │   │   │   └── sound.service.ts # Cliente HTTP Audio y Categorías
 │   │   │   ├── 📂 features    # Módulos Funcionales
 │   │   │   │   ├── 📂 auth    # Vistas de Auth (Login/Register)
-│   │   │   │   └── 📂 projects # Vistas Principales (Home, Upload)
+│   │   │   │   ├── 📂 home    # Página principal con categorías dinámicas
+│   │   │   │   ├── 📂 category # Vista de detalle por categoría
+│   │   │   │   └── 📂 projects # Subida de archivos (Upload)
 │   │   │   ├── 📂 layout      # Estructura Base (Header/Footer)
 │   │   │   └── 📂 shared      # Componentes Reutilizables
 │   │   ├── 📂 styles          # Arquitectura SCSS (Variables, Mixins)
@@ -142,19 +150,29 @@ c:/xampp/htdocs/Sonora2/
 ### 1. Home (Página Principal)
 
 - **Ruta**: `/`
-- **Funcionalidad**: Listado de canciones destacadas ("Tops Download"), carrusel de audios, barra de búsqueda y filtros por categoría.
-- **Componentes Clave**: `SoundListComponent`, `SoundCardComponent`.
+- **Funcionalidad**:
+  - Listado de canciones destacadas ("Tops Download").
+  - **[NUEVO]** Carrusel y botones de categorías cargados dinámicamente desde la BD.
+  - Barra de búsqueda global.
+- **Componentes Clave**: `HomeComponent`, `SoundCardComponent`.
 
-### 2. Login / Registro
+### 2. Navegación por Categorías
+
+- **Ruta**: `/categoria/:nombre`
+- **Funcionalidad**: Muestra todas las canciones pertenecientes a una categoría específica (ej. "Naturaleza", "Coches").
+- **Backend**: Filtra la consulta SQL optimizando el rendimiento.
+
+### 3. Login / Registro
 
 - **Rutas**: `/login`, `/register`
 - **Funcionalidad**: Autenticación segura de usuarios. Genera un Token JWT que se almacena en `localStorage` para persistir la sesión.
 
-### 3. Subida de Archivos (Upload)
+### 4. Subida de Archivos (Upload)
 
 - **Ruta**: `/subir` (Protegida - Requiere Login)
 - **Funcionalidad**: Formulario reactivo para subir nuevas pistas.
   - **Soporte**: MP3, MP4, WAV.
+  - **[NUEVO]** Selección de categoría dinámica desde la base de datos.
   - **Validación**: Verifica tipo de archivo antes de subir.
   - **Progreso**: Muestra barra de carga en tiempo real.
 

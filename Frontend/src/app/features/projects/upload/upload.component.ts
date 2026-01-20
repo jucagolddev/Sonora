@@ -7,35 +7,48 @@
  *              vinculación de metadatos (título, autor, categoría).
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpEventType } from '@angular/common/http';
+import { SoundService } from '../../../core/services/sound.service'; // Importar servicio
 
 @Component({
   selector: 'app-upload',
   templateUrl: './upload.component.html',
 })
-export class UploadComponent {
-
+export class UploadComponent implements OnInit {
   formularioSubida: FormGroup;
   archivoSeleccionado: File | null = null;
   // Nombre del archivo mostrado en la UI (Matriz con template)
-  nombreArchivo: string = ''; 
-  
+  nombreArchivo: string = '';
+
   // Estados de la subida
   porcentaje: number = 0;
   subiendo: boolean = false;
 
+  // Categorías disponibles
+  categorias: string[] = [];
+
   constructor(
-    private fb: FormBuilder, 
-    private http: HttpClient
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private soundService: SoundService, // Inyectar SoundService
   ) {
     this.formularioSubida = this.fb.group({
       titulo: ['', Validators.required],
-      autor: ['', Validators.required], 
+      autor: ['', Validators.required],
       categoria: ['', Validators.required],
       descripcion: ['', Validators.required],
-      notas: ['']
+      notas: [''],
+    });
+  }
+
+  ngOnInit(): void {
+    // Cargar categorías disponibles desde el backend
+    this.soundService.getCategories().subscribe({
+      next: (cats) => (this.categorias = cats),
+      error: (err) =>
+        console.error('Error cargando categorías en upload:', err),
     });
   }
 
@@ -44,12 +57,16 @@ export class UploadComponent {
     if (file) {
       const validTypes = ['audio/mpeg', 'video/mp4', 'audio/wav', 'audio/ogg'];
       const validExtensions = ['.mp3', '.mp4', '.wav', '.ogg'];
-      
+
       const isTypeValid = validTypes.includes(file.type);
-      const isExtensionValid = validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+      const isExtensionValid = validExtensions.some((ext) =>
+        file.name.toLowerCase().endsWith(ext),
+      );
 
       if (!isTypeValid && !isExtensionValid) {
-        alert('Solo se permiten archivos de audio/video válidos (MP3, MP4, WAV, OGG).');
+        alert(
+          'Solo se permiten archivos de audio/video válidos (MP3, MP4, WAV, OGG).',
+        );
         return;
       }
       this.archivoSeleccionado = file;
@@ -66,9 +83,12 @@ export class UploadComponent {
       formData.append('archivo', this.archivoSeleccionado);
       formData.append('titulo', this.formularioSubida.get('titulo')?.value);
       formData.append('autor', this.formularioSubida.get('autor')?.value);
-      formData.append('categoria', this.formularioSubida.get('categoria')?.value);
-      
-      const currentUser = localStorage.getItem('sonora_current_user'); 
+      formData.append(
+        'categoria',
+        this.formularioSubida.get('categoria')?.value,
+      );
+
+      const currentUser = localStorage.getItem('sonora_current_user');
 
       if (currentUser) {
         try {
@@ -85,24 +105,26 @@ export class UploadComponent {
         return;
       }
 
-      this.http.post('http://localhost:3000/api/archivos/subir', formData, {
-        reportProgress: true,
-        observe: 'events'
-      }).subscribe({
-        next: (event) => {
-          if (event.type === HttpEventType.UploadProgress && event.total) {
-            this.porcentaje = Math.round((100 * event.loaded) / event.total);
-          } else if (event.type === HttpEventType.Response) {
-            alert('¡Archivo subido correctamente!');
-            this.limpiarFormulario();
-          }
-        },
-        error: (err) => {
-          console.error('Error durante la subida:', err);
-          alert('Error crítico al subir el archivo.');
-          this.subiendo = false;
-        }
-      });
+      this.http
+        .post('http://localhost:3000/api/archivos/subir', formData, {
+          reportProgress: true,
+          observe: 'events',
+        })
+        .subscribe({
+          next: (event) => {
+            if (event.type === HttpEventType.UploadProgress && event.total) {
+              this.porcentaje = Math.round((100 * event.loaded) / event.total);
+            } else if (event.type === HttpEventType.Response) {
+              alert('¡Archivo subido correctamente!');
+              this.limpiarFormulario();
+            }
+          },
+          error: (err) => {
+            console.error('Error durante la subida:', err);
+            alert('Error crítico al subir el archivo.');
+            this.subiendo = false;
+          },
+        });
     } else {
       alert('Por favor, completa el formulario y selecciona un archivo.');
     }

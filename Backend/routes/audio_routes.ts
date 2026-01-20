@@ -5,8 +5,8 @@
  * Descripción: Endpoints públicos para consultar el catálogo de música.
  */
 
-import express from 'express';
-import * as audioController from '../controllers/audio_controller';
+import express from "express";
+import * as audioController from "../controllers/audio_controller";
 
 const router = express.Router();
 
@@ -16,8 +16,12 @@ const router = express.Router();
  * Prefijo: /api/canciones
  */
 
+// GET /api/canciones/categorias
+// Devuelve el listado de categorías disponibles
+router.get("/categorias", audioController.obtenerCategorias);
+
 // GET /api/canciones
 // Devuelve el listado completo de audios
-router.get('/', audioController.obtenerTodos);
+router.get("/", audioController.obtenerTodos);
 
 export default router;

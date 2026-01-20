@@ -69,20 +69,56 @@ CREATE TABLE `canciones` (
 --
 
 INSERT INTO `canciones` (`id_cancion`, `titulo`, `id_autor_fk`, `url_audio`, `fecha_catalogo`, `reproducciones`, `descargas`, `id_licencia_fk`, `duracion`, `categoria`, `formato`) VALUES
-(7, 'PAJARO 1', 3, '/archivos/1768903988734.mp3', '2026-01-20 11:13:08', 0, 0, 1, NULL, NULL, NULL),
-(8, 'Pajaro 2', 3, '/archivos/1768905282120.mp3', '2026-01-20 11:34:42', 0, 0, 1, NULL, NULL, NULL),
-(9, 'puerta coche', 4, '/archivos/1768905327602.mp3', '2026-01-20 11:35:27', 0, 0, 1, NULL, NULL, NULL),
-(10, 'Motor arrancando', 5, '/archivos/1768905359922.mp3', '2026-01-20 11:35:59', 0, 0, 1, NULL, NULL, NULL);
+(7, 'PAJARO 1', 3, '/archivos/1768903988734.mp3', '2026-01-20 11:13:08', 0, 0, 1, NULL, 'Naturaleza', NULL),
+(8, 'Pajaro 2', 3, '/archivos/1768905282120.mp3', '2026-01-20 11:34:42', 0, 0, 1, NULL, 'Naturaleza', NULL),
+(9, 'puerta coche', 4, '/archivos/1768905327602.mp3', '2026-01-20 11:35:27', 0, 0, 1, NULL, 'Coche', NULL),
+(10, 'Motor arrancando', 5, '/archivos/1768905359922.mp3', '2026-01-20 11:35:59', 0, 0, 1, NULL, 'Motor', NULL);
 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `licencias`
+-- Estructura de tabla para la tabla `categorias`
 --
 
-CREATE TABLE `licencias` (
-  `id_licencia` int(11) NOT NULL COMMENT 'Identificador único de la licencia',
-  `nombre_licencia` varchar(50) NOT NULL COMMENT 'Ej: Estándar, Creative Commons, etc.'
+CREATE TABLE `categorias` (
+  `id_categoria` int(11) NOT NULL COMMENT 'Identificador único de la categoría',
+  `nombre_categoria` varchar(50) NOT NULL COMMENT 'Nombre de la categoría'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Volcado de datos para la tabla `categorias`
+--
+
+INSERT INTO `categorias` (`id_categoria`, `nombre_categoria`) VALUES
+(1, 'Naturaleza'),
+(2, 'Instrumento'),
+(3, 'Grito'),
+(4, 'Musica'),
+(5, 'Efectos'),
+(6, 'Notificacion'),
+(7, 'Transicion'),
+(8, 'Silbido'),
+(9, 'Coche'),
+(10, 'Moto');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `canciones`
+--
+
+CREATE TABLE `canciones` (
+  `id_cancion` int(11) NOT NULL COMMENT 'Identificador único de la canción',
+  `titulo` varchar(150) NOT NULL COMMENT 'Título de la canción',
+  `id_autor_fk` int(11) NOT NULL COMMENT 'Autor de la canción',
+  `url_audio` varchar(255) NOT NULL COMMENT 'Ruta relativa o URL del archivo de audio',
+  `fecha_catalogo` datetime DEFAULT current_timestamp() COMMENT 'Fecha de publicación',
+  `reproducciones` int(11) DEFAULT 0 COMMENT 'Contador de reproducciones',
+  `descargas` int(11) DEFAULT 0 COMMENT 'Contador de descargas',
+  `id_licencia_fk` int(11) DEFAULT 1 COMMENT 'Tipo de licencia (FK)',
+  `duracion` varchar(20) DEFAULT NULL COMMENT 'Duración en formato texto (ej: 3:45)',
+  `categoria` varchar(50) DEFAULT NULL COMMENT 'Género o categoría musical',
+  `formato` varchar(10) DEFAULT NULL COMMENT 'Extensión del archivo (mp3, wav)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -135,6 +171,12 @@ ALTER TABLE `canciones`
   ADD KEY `fk_cancion_licencia` (`id_licencia_fk`);
 
 --
+-- Indices de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  ADD PRIMARY KEY (`id_categoria`);
+
+--
 -- Indices de la tabla `licencias`
 --
 ALTER TABLE `licencias`
@@ -162,6 +204,12 @@ ALTER TABLE `autor`
 --
 ALTER TABLE `canciones`
   MODIFY `id_cancion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la canción', AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT de la tabla `categorias`
+--
+ALTER TABLE `categorias`
+  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la categoría', AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `licencias`

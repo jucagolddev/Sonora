@@ -21,6 +21,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Listas de sonidos para los carruseles (Requeridas por el template)
   listaSonidos: Sound[] = [];
+  categorias: string[] = [];
   sonidosNaturaleza: Sound[] = [];
   sonidosInstrumentos: Sound[] = [];
   sonidosExtranos: Sound[] = [];
@@ -43,6 +44,15 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Obtiene todos los sonidos y los clasifica por categoría para rellenar los carruseles.
    */
   private cargarDatos() {
+    // Cargar Categorías
+    this.soundService.getCategories().subscribe({
+      next: (cats) => {
+        this.categorias = cats;
+      },
+      error: (err) => console.error('Error al cargar categorías:', err),
+    });
+
+    // Cargar Sonidos
     this.soundService.getAllSounds().subscribe({
       next: (sonidos) => {
         this.listaSonidos = sonidos;

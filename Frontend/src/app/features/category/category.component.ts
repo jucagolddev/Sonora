@@ -39,17 +39,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
    * Obtiene los sonidos desde el servicio y aplica el filtro de categoría.
    */
   cargarSonidos() {
-    this.soundService.getAllSounds().subscribe({
+    if (!this.categoriaNombre) return;
+
+    this.soundService.getAllSounds(this.categoriaNombre).subscribe({
       next: (datos: Sound[]) => {
-        if (this.categoriaNombre) {
-          // Filtrado insensible a mayúsculas
-          this.listaSonidos = datos.filter(
-            (sound) =>
-              sound.categoria &&
-              sound.categoria.toLowerCase() ===
-                this.categoriaNombre.toLowerCase(),
-          );
-        }
+        this.listaSonidos = datos;
       },
       error: (err) => console.error('Error al cargar la categoría:', err),
     });

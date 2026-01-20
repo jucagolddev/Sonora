@@ -28,16 +28,8 @@
     <div class="seccion-categorias">
         <h2 class="titulo-seccion">categorías</h2>
         <div class="grid-categorias">
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Naturaleza']">Naturaleza</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Instrumento']">Instrumentos</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Grito']">Gritos</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Musica']">Musica</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Efectos']">Efectos especiales</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Notificacion']">Notificacion</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Transicion']">Transicion</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Silbido']">Silbidos</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Coche']">Coches</button>
-            <button class="boton-categoria" [routerLink]="['/categoria', 'Moto']">Motos</button>
+            <button *ngFor="let cat of categorias" class="boton-categoria" [routerLink]="['/categoria', cat]">{{ cat
+                }}</button>
         </div>
     </div>
 
