@@ -91,6 +91,8 @@ img {
   border-color: #ff6b00;
   color: #ff6b00;
   background-color: rgba(255, 107, 0, 0.1);
+  transform: scale(1.05); /* Micro-interacción: Pequeño zoom */
+  box-shadow: 0 2px 8px rgba(255, 107, 0, 0.2);
 }
 
 .boton-primario {
@@ -191,7 +193,10 @@ img {
   transition: transform 0.2s ease;
 }
 .tarjeta-sonido:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px) scale(1.02); /* Micro-interacción: Elevación */
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(255, 107, 0, 0.1);
 }
 .tarjeta-sonido .controles-reproductor {
   display: flex;
@@ -776,6 +781,8 @@ img {
   .acciones-autenticacion
   .boton-confirmar:hover {
   background-color: #ff8c33;
+  transform: scale(1.05); /* Micro-interacción: Pulsación */
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
 }
 .pagina-autenticacion
   .tarjeta-autenticacion

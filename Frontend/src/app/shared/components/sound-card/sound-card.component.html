@@ -2,7 +2,8 @@
     <!-- Cabecera de la tarjeta con icono de descarga -->
     <div class="cabecera-tarjeta">
         <div class="metadatos-izquierda">
-            <span class="material-icons-outlined icono-descarga" (click)="descargar()" title="Descargar">download</span>
+            <span class="material-icons-outlined icono-descarga" (click)="descargar()" title="Descargar"
+                aria-label="Descargar canción" role="button" tabindex="0">download</span>
             <span class="texto-metadato" *ngIf="sonido.descargas !== undefined">{{ sonido.descargas }}</span>
         </div>
         <div class="duracion-derecha">
@@ -12,8 +13,9 @@
 
     <!-- Contenido principal: Play/Pause central -->
     <div class="cuerpo-tarjeta">
-        <button class="boton-reproducir-central" (click)="togglePlay()">
-            <span class="material-icons-outlined">
+        <button class="boton-reproducir-central" (click)="togglePlay()"
+            [attr.aria-label]="estaReproduciendo ? 'Pausar' : 'Reproducir'">
+            <span class="material-icons-outlined" aria-hidden="true">
                 {{ estaReproduciendo ? 'pause_circle' : 'play_circle' }}
             </span>
         </button>
@@ -35,8 +37,10 @@
 
         <!-- Botones de control extras -->
         <div class="controles-secundarios">
-            <span class="material-icons-outlined icono-pequeno" (click)="restart()" title="Reiniciar">replay</span>
-            <span class="material-icons-outlined icono-pequeno" (click)="stop()" title="Parar">stop</span>
+            <span class="material-icons-outlined icono-pequeno" (click)="restart()" title="Reiniciar"
+                aria-label="Reiniciar canción" role="button" tabindex="0">replay</span>
+            <span class="material-icons-outlined icono-pequeno" (click)="stop()" title="Parar"
+                aria-label="Detener canción" role="button" tabindex="0">stop</span>
         </div>
     </div>
 </div>

@@ -6,8 +6,9 @@ dist/
 .env
 
 # Archivos de subida (local)
-archivos/*
-!archivos/.gitkeep
+# Se permiten subir archivos de ejemplo al repo
+# archivos/*
+# !archivos/.gitkeep
 
 # Logs
 *.log

@@ -2,8 +2,8 @@
     <!-- Contenedor principal del buscador con el título de bienvenida -->
     <div class="contenedor-busqueda-principal">
         <div class="barra-busqueda">
-            <span class="material-icons-outlined icono-lupa" (click)="buscarSonidos()"
-                style="cursor: pointer;">search</span>
+            <span class="material-icons-outlined icono-lupa" (click)="buscarSonidos()" style="cursor: pointer;"
+                aria-label="Buscar sonidos" role="button" tabindex="0">search</span>
             <input type="text" class="input-busqueda" placeholder="Buscar..." [(ngModel)]="terminoBusqueda"
                 (keyup.enter)="buscarSonidos()">
         </div>
@@ -41,8 +41,9 @@
         <div class="grupo-carrusel">
             <span class="titulo-pill">sonidos populares</span>
             <div class="contenedor-carrusel">
-                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselPopulares)">
-                    <span class="material-icons-outlined">arrow_back_ios</span>
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselPopulares)"
+                    aria-label="Mover carrusel a la izquierda">
+                    <span class="material-icons-outlined" aria-hidden="true">arrow_back_ios</span>
                 </button>
                 <div class="ventana-carrusel" #carruselPopulares>
                     <div class="pista-carrusel">
@@ -55,8 +56,9 @@
                         </div>
                     </div>
                 </div>
-                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselPopulares)">
-                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselPopulares)"
+                    aria-label="Mover carrusel a la derecha">
+                    <span class="material-icons-outlined" aria-hidden="true">arrow_forward_ios</span>
                 </button>
             </div>
         </div>
