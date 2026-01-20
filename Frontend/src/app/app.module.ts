@@ -9,7 +9,6 @@ import { AppComponent } from './app.component';
 // Interceptores
 import { TokenInterceptor } from './core/interceptors/token.interceptor';
 
-
 // Features
 import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
@@ -19,14 +18,13 @@ import { SearchComponent } from './features/search/search.component';
 import { CategoryComponent } from './features/category/category.component';
 
 // Shared Components (Traditional)
-import { AudioCardComponent } from './shared/components/audio-card/audio-card.component';
-import { AudioListComponent } from './shared/components/audio-list/audio-list.component';
-import { AudioSearchComponent } from './shared/components/audio-search/audio-search.component';
+// Removidos para arreglar error de compilación (obsoletos)
 
 // Shared Components (Standalone)
 import { AlertMsgComponent } from './shared/components/alert-msg/alert-msg.component';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { SoundCardComponent } from './shared/components/sound-card/sound-card.component';
+import { HeaderComponent } from './shared/components/header/header.component';
 
 @NgModule({
   declarations: [
@@ -37,9 +35,6 @@ import { SoundCardComponent } from './shared/components/sound-card/sound-card.co
     UploadComponent,
     SearchComponent,
     CategoryComponent,
-    AudioCardComponent,
-    AudioListComponent,
-    AudioSearchComponent
   ],
   imports: [
     BrowserModule,
@@ -49,15 +44,16 @@ import { SoundCardComponent } from './shared/components/sound-card/sound-card.co
     ReactiveFormsModule,
     AlertMsgComponent,
     LoadingSpinnerComponent,
-    SoundCardComponent
+    SoundCardComponent,
+    HeaderComponent,
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: TokenInterceptor,
-      multi: true
-    }
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

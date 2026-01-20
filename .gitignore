@@ -20,6 +20,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Angular
+.angular/
+.cache/
+
 # Multimedia (Opcional - si no se quieren versionar las subidas locales)
+# Mantenemos .gitkeep o estructura básica si es necesario, pero ignoramos el contenido
 /Backend/archivos/*
 !/Backend/archivos/.gitkeep

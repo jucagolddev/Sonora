@@ -1,7 +1,8 @@
 @charset "UTF-8";
-@use 'styles/pages/category';
-@use 'styles/pages/upload';
-@use 'styles/pages/search';
+@use "styles/pages/category";
+@use "styles/pages/upload";
+@use "styles/pages/search";
+@use "styles/layout/header";
 
 /* Archivo principal de estilos de la aplicación */
 * {
@@ -1201,4 +1202,3 @@ img {
 @import "styles/main";
 
 // @use imports are moved to the top
-

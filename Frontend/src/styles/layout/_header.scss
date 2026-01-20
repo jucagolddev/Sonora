@@ -5,53 +5,176 @@
 // LAYOUT: CABECERA (HEADER)
 // ==========================================================================
 
+// src/styles/layout/_header.scss
+@use "../variables" as *;
+
+// ==========================================================================
+// LAYOUT: CABECERA (HEADER)
+// ==========================================================================
+
 .cabecera-principal {
   width: 100%;
-  padding: 20px 40px;
+  background-color: $color-bg;
+  border-bottom: 2px solid $color-acento;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 
-  // ----------------------------------------------------------------------
-  // Barra Superior: Logo y Acciones de Usuario
-  // ----------------------------------------------------------------------
-  .barra-superior {
+  .contenedor-cabecera {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    gap: 20px;
+  }
 
-    // Contenedor del Logo
-    .contenedor-logo {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-decoration: none; // Asegura que no tenga subrayado si es un enlace
+  // 1. LOGO
+  .logo {
+    flex-shrink: 0;
 
-      .logo-icono {
-        // Renombrado de .logo-icon
-        font-size: 2.5rem; // Tamaño grande para el icono
-        color: $color-acento;
-        line-height: 1;
+    .imagen-logo {
+      height: 50px; // Tamaño controlado para el logo
+      width: auto;
+      display: block;
+      transition: transform 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
       }
+    }
+  }
 
-      .logo-texto {
-        // Renombrado de .logo-text
-        font-size: 1.2rem;
-        color: $color-acento;
-        font-weight: bold;
-        letter-spacing: 3px; // Espaciado S O N O R A
+  // 2. NAVEGACIÓN
+  .navegacion-principal {
+    flex-grow: 1;
+
+    .lista-navegacion {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+      margin: 0;
+      padding: 0;
+
+      a {
+        text-decoration: none;
+        color: $color-texto;
+        font-weight: 500;
         text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.9rem;
+        transition: color 0.3s ease;
+
+        &:hover,
+        &.activo {
+          color: $color-acento;
+        }
+      }
+    }
+  }
+
+  // 3. ZONA DE USUARIO Y BOTONES
+  .zona-usuario {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .usuario-logueado {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      .nombre-usuario {
+        color: $color-texto;
+        font-size: 0.9rem;
+        span {
+          color: $color-acento;
+          font-weight: bold;
+        }
       }
     }
 
-    // Acciones de usuario (Login/Registro)
-    // Acciones de usuario (Login/Registro)
-    .acciones-usuario {
+    .grupo-botones,
+    .acciones-invitado {
       display: flex;
       gap: 10px;
+    }
 
-      .boton-primario {
-        width: auto; // Sobrescribir el 100% del componente base
-        min-width: 180px; // Tamaño uniforme para todos
-        padding: 0.8rem 1rem; // Un poco menos de padding lateral si fijamos ancho
+    // Estilo unificado para botones del header
+    .boton-accion,
+    .boton-login,
+    .boton-registro,
+    .boton-subir,
+    .boton-cerrar-sesion {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-align: center;
+      min-width: 140px; // Tamaño uniforme
+      border: 2px solid transparent;
+    }
+
+    // Variante: Subir / Registro (Destacado)
+    .boton-subir,
+    .boton-registro {
+      background-color: $color-acento;
+      color: #000;
+
+      &:hover {
+        background-color: $color-acento-light;
+        box-shadow: 0 0 15px rgba($color-acento, 0.3);
+      }
+    }
+
+    // Variante: Login / Cerrar Sesión (Delineado o Secundario)
+    .boton-login,
+    .boton-cerrar-sesion {
+      background-color: transparent;
+      border-color: $color-acento;
+      color: $color-acento;
+
+      &:hover {
+        background-color: $color-acento;
+        color: #000;
+      }
+    }
+
+    // Reset para el botón nativo de cerrar sesión
+    button.boton-cerrar-sesion {
+      font-family: inherit;
+    }
+  }
+}
+
+// Responsivo
+@media (max-width: $breakpoint-md) {
+  .cabecera-principal {
+    .contenedor-cabecera {
+      flex-direction: column;
+      gap: 15px;
+      text-align: center;
+    }
+
+    .navegacion-principal .lista-navegacion {
+      justify-content: center;
+    }
+
+    .zona-usuario {
+      flex-direction: column;
+      width: 100%;
+
+      .grupo-botones,
+      .acciones-invitado {
+        width: 100%;
+        justify-content: center;
       }
     }
   }

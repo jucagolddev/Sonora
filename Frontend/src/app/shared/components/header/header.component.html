@@ -1,1 +1,55 @@
-<p>header works!</p>
+<!--
+  ARQUITECTURA DE SOFTWARE - SONORA V2
+  Template: Cabecera de la Aplicación
+  Descripción: Barra de navegación responsive con tema oscuro.
+              Incluye botones distintos para Subir Música y Cerrar Sesión.
+-->
+
+<header class="cabecera-principal">
+  <div class="contenedor-cabecera">
+
+    <!-- LOGO (Izquierda) -->
+    <div class="logo">
+      <a routerLink="/">
+        <img src="assets/logo.png" alt="Sonora Logo" class="imagen-logo">
+      </a>
+    </div>
+
+    <!-- NAVEGACIÓN (Centro) -->
+    <nav class="navegacion-principal">
+      <ul class="lista-navegacion">
+        <li><a routerLink="/" routerLinkActive="activo" [routerLinkActiveOptions]="{exact: true}">Inicio</a></li>
+        <!-- Podemos añadir más enlaces generales aquí si hiciera falta -->
+      </ul>
+    </nav>
+
+    <!-- ZONA DE USUARIO (Derecha) -->
+    <div class="zona-usuario">
+
+      <!-- USUARIO LOGUEADO -->
+      <div *ngIf="estaLogueado$ | async; else bloqueInvitado" class="usuario-logueado">
+        <span class="nombre-usuario">Hola, <span>{{ (usuarioActual$ | async)?.nombre_usuario }}</span></span>
+
+        <div class="grupo-botones">
+          <!-- Botón de Subir Música -->
+          <a routerLink="/subir" class="boton-accion boton-subir" routerLinkActive="activo">Subir Música</a>
+
+          <!-- Botón de Cerrar Sesión -->
+          <button (click)="cerrarSesion()" class="boton-accion boton-cerrar-sesion">
+            Cerrar Sesión
+          </button>
+        </div>
+      </div>
+
+      <!-- INVITADO -->
+      <ng-template #bloqueInvitado>
+        <div class="acciones-invitado">
+          <a routerLink="/login" class="boton-login">Iniciar Sesión</a>
+          <a routerLink="/registro" class="boton-registro">Registrarse</a>
+        </div>
+      </ng-template>
+
+    </div>
+
+  </div>
+</header>

@@ -1,27 +1,7 @@
 <div class="main-container">
-  <header class="cabecera-principal">
-    <div class="barra-superior">
-      <a routerLink="/" class="contenedor-logo">
-        <span class="logo-icono">
-          <!-- Muestro el logo de la aplicación -->
-          <img src="assets/logo.png" alt="Sonora Logo" style="height: 50px;">
-        </span>
-      </a>
 
-
-      <div class="acciones-usuario" *ngIf="isHomePage">
-        <!-- Muestro botones de inicio de sesión si el usuario no está autenticado -->
-        <ng-container *ngIf="!(isLoggedIn$ | async)">
-          <button class="boton-primario" routerLink="/login">INICIAR SESIÓN</button>
-        </ng-container>
-        <!-- Si el usuario ya inició sesión, le permito subir archivos o cerrar sesión -->
-        <ng-container *ngIf="isLoggedIn$ | async">
-          <button class="boton-primario" routerLink="/subir">SUBIR ARCHIVOS</button>
-          <button class="boton-primario" (click)="logout()">CERRAR SESIÓN</button>
-        </ng-container>
-      </div>
-    </div>
-  </header>
+  <!-- CAMBIO: Utilizamos el componente Header reutilizable para gestionar la sesión -->
+  <app-header></app-header>
 
   <!-- El router inyectará aquí el componente que corresponda a la URL actual -->
   <router-outlet></router-outlet>

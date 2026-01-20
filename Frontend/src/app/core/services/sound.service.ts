@@ -7,8 +7,9 @@
  */
 
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Sound } from '../models/sound.interface';
-import { of } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 /**
  * SERVICIO DE SONIDOS (SoundService)
@@ -19,48 +20,46 @@ import { of } from 'rxjs';
   providedIn: 'root',
 })
 export class SoundService {
-  // Datos simulados (Mock Data) para desarrollo y pruebas de UI
-  private sonidosMock: Sound[] = [
-    {
-      id: 1,
-      titulo: 'Canto matutino',
-      autor: 'Juan Pérez',
-      imgUrl: 'assets/img/pajaro.jpg',
-      audioUrl: 'assets/audio/test.mp3',
-      categoria: 'Naturaleza',
-    },
-    {
-      id: 2,
-      titulo: 'Motor V8',
-      autor: 'Ana G.',
-      imgUrl: 'assets/img/coche.jpg',
-      audioUrl: 'assets/audio/motor.mp3',
-      categoria: 'Coches',
-    },
-  ];
+  private apiUrl = 'http://localhost:3000/api/canciones';
+  private backendBaseUrl = 'http://localhost:3000';
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   /**
-   * Obtener todos los sonidos.
-   * Simula una petición HTTP asíncrona usando 'of'.
+   * Obtener todos los sonidos desde el API.
    * @returns Observable con el array de sonidos.
    */
-  getAllSounds() {
-    return of(this.sonidosMock);
+  getAllSounds(): Observable<Sound[]> {
+    return this.http.get<any>(this.apiUrl).pipe(
+      map((response) => {
+        // Mapeamos la respuesta del backend al formato de nuestra interfaz
+        return response.audios.map((a: any) => ({
+          id: a.id_cancion,
+          titulo: a.titulo,
+          autor: a.autor_nombre || 'Desconocido',
+          imgUrl: 'assets/img/pajaro.jpg', // Placeholder
+          audioUrl: `${this.backendBaseUrl}${a.url_audio}`,
+          categoria: a.categoria || 'Otros',
+          duracion: a.duracion,
+          descargas: a.descargas,
+          reproducciones: a.reproducciones,
+        }));
+      }),
+    );
   }
 
   /**
    * Buscar sonidos por título.
-   * Realiza un filtrado en el cliente sobre los datos mockeados.
    * @param termino Texto a buscar.
    * @returns Observable con los sonidos filtrados.
    */
-  searchSounds(termino: string) {
-    const filtrados = this.sonidosMock.filter((s) =>
-      s.titulo.toLowerCase().includes(termino.toLowerCase())
+  searchSounds(termino: string): Observable<Sound[]> {
+    return this.getAllSounds().pipe(
+      map((sonidos) =>
+        sonidos.filter((s) =>
+          s.titulo.toLowerCase().includes(termino.toLowerCase()),
+        ),
+      ),
     );
-    return of(filtrados);
   }
 }
-

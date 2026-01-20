@@ -1,1 +1,42 @@
-<p>sound-card works!</p>
+<div class="tarjeta-sonido">
+    <!-- Cabecera de la tarjeta con icono de descarga -->
+    <div class="cabecera-tarjeta">
+        <div class="metadatos-izquierda">
+            <span class="material-icons-outlined icono-descarga" (click)="descargar()" title="Descargar">download</span>
+            <span class="texto-metadato" *ngIf="sonido.descargas !== undefined">{{ sonido.descargas }}</span>
+        </div>
+        <div class="duracion-derecha">
+            <span>{{ duracionTotal }}</span>
+        </div>
+    </div>
+
+    <!-- Contenido principal: Play/Pause central -->
+    <div class="cuerpo-tarjeta">
+        <button class="boton-reproducir-central" (click)="togglePlay()">
+            <span class="material-icons-outlined">
+                {{ estaReproduciendo ? 'pause_circle' : 'play_circle' }}
+            </span>
+        </button>
+    </div>
+
+    <!-- Pie de tarjeta: Título y Controles secundarios -->
+    <div class="pie-tarjeta">
+        <div class="info-sonido">
+            <p class="titulo">{{ sonido.titulo }}</p>
+            <p class="autor">{{ sonido.autor }}</p>
+        </div>
+
+        <!-- Barra de progreso con tiempos -->
+        <div class="barra-progreso-contenedor">
+            <span class="tiempo-label">{{ tiempoActual }}</span>
+            <input type="range" class="slider-progreso" [value]="progreso" (input)="onSeek($event)" min="0" max="100"
+                step="0.1">
+        </div>
+
+        <!-- Botones de control extras -->
+        <div class="controles-secundarios">
+            <span class="material-icons-outlined icono-pequeno" (click)="restart()" title="Reiniciar">replay</span>
+            <span class="material-icons-outlined icono-pequeno" (click)="stop()" title="Parar">stop</span>
+        </div>
+    </div>
+</div>

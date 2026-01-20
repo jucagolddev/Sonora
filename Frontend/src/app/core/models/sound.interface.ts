@@ -12,7 +12,9 @@ export interface Sound {
   imgUrl: string;
   // URL de descarga/reproducción del archivo MP3
   audioUrl: string;
-  // Categoría del sonido para filtrado y organización (Incluso variaciones frecuentes)
-  categoria: 'Naturaleza' | 'Instrumento' | 'Instrumentos' | 'Extraño' | 'Extraños' | 'Grito' | 'Gritos' | 'Musica' | 'Música' | 'Efectos' | 'Notificacion' | 'Notificaciones' | 'Transicion' | 'Transiciones' | 'Silbido' | 'Silbidos' | 'Coche' | 'Coches' | 'Moto' | 'Motos' | 'Otros';
-  duracion?: number;
+  // Categoría del sonido para filtrado y organización
+  categoria: string;
+  duracion?: string;
+  descargas?: number;
+  reproducciones?: number;
 }

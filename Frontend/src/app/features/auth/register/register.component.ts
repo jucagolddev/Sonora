@@ -22,7 +22,7 @@ export class RegisterComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {
     this.formularioRegistro = this.fb.group({
       nombre: ['', Validators.required],
@@ -55,25 +55,27 @@ export class RegisterComponent {
       const datosParaBackend = {
         nombre_usuario: `${this.formularioRegistro.value.nombre} ${this.formularioRegistro.value.apellidos}`,
         email: this.formularioRegistro.value.email,
-        password: this.formularioRegistro.value.password
+        password: this.formularioRegistro.value.password,
       };
 
       // Comunicación con el servicio
-      this.authService
-        .register(datosParaBackend)
-        .subscribe({
-          next: (res) => {
-            console.log('Registro exitoso:', res);
-            alert('¡Usuario registrado con éxito! Sesión iniciada automáticamente.');
-            this.router.navigate(['/']); 
-          },
-          error: (err) => {
-            console.error('Error en registro:', err);
-            const msg = err.error?.mensaje || 'No se pudo completar el registro. Verifica tu conexión o si el email ya existe.';
-            alert(msg);
-          }
-        });
-
+      this.authService.register(datosParaBackend).subscribe({
+        next: (res) => {
+          console.log('Registro exitoso:', res);
+          alert(
+            '¡Usuario registrado con éxito! Sesión iniciada automáticamente.',
+          );
+          this.router.navigate(['/']);
+        },
+        error: (err) => {
+          console.error('Error detallado en registro:', err);
+          // Intentamos mostrar el mensaje específico del backend si existe
+          const msg =
+            err.error?.mensaje ||
+            'No se pudo completar el registro. Verifica que el servidor (Backend) esté corriendo y que la base de datos esté accesible.';
+          alert(`Error: ${msg}`);
+        },
+      });
     } else {
       alert('Por favor, completa todos los campos requeridos correctamente.');
     }
