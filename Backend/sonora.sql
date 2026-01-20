@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -104,21 +103,12 @@ INSERT INTO `categorias` (`id_categoria`, `nombre_categoria`) VALUES
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `canciones`
+-- Estructura de tabla para la tabla `licencias`
 --
 
-CREATE TABLE `canciones` (
-  `id_cancion` int(11) NOT NULL COMMENT 'Identificador único de la canción',
-  `titulo` varchar(150) NOT NULL COMMENT 'Título de la canción',
-  `id_autor_fk` int(11) NOT NULL COMMENT 'Autor de la canción',
-  `url_audio` varchar(255) NOT NULL COMMENT 'Ruta relativa o URL del archivo de audio',
-  `fecha_catalogo` datetime DEFAULT current_timestamp() COMMENT 'Fecha de publicación',
-  `reproducciones` int(11) DEFAULT 0 COMMENT 'Contador de reproducciones',
-  `descargas` int(11) DEFAULT 0 COMMENT 'Contador de descargas',
-  `id_licencia_fk` int(11) DEFAULT 1 COMMENT 'Tipo de licencia (FK)',
-  `duracion` varchar(20) DEFAULT NULL COMMENT 'Duración en formato texto (ej: 3:45)',
-  `categoria` varchar(50) DEFAULT NULL COMMENT 'Género o categoría musical',
-  `formato` varchar(10) DEFAULT NULL COMMENT 'Extensión del archivo (mp3, wav)'
+CREATE TABLE `licencias` (
+  `id_licencia` int(11) NOT NULL COMMENT 'Identificador único de la licencia',
+  `nombre_licencia` varchar(50) NOT NULL COMMENT 'Nombre de la licencia'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -197,50 +187,4 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `autor`
 --
 ALTER TABLE `autor`
-  MODIFY `id_autor` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del autor', AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT de la tabla `canciones`
---
-ALTER TABLE `canciones`
-  MODIFY `id_cancion` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la canción', AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de la tabla `categorias`
---
-ALTER TABLE `categorias`
-  MODIFY `id_categoria` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la categoría', AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de la tabla `licencias`
---
-ALTER TABLE `licencias`
-  MODIFY `id_licencia` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único de la licencia', AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Identificador único del usuario', AUTO_INCREMENT=2;
-
---
--- Restricciones para tablas volcadas
---
-
---
--- Filtros para la tabla `autor`
---
-ALTER TABLE `autor`
-  ADD CONSTRAINT `fk_autor_usuario` FOREIGN KEY (`id_usuario_fk`) REFERENCES `usuarios` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `canciones`
---
-ALTER TABLE `canciones`
-  ADD CONSTRAINT `fk_cancion_autor` FOREIGN KEY (`id_autor_fk`) REFERENCES `autor` (`id_autor`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_cancion_licencia` FOREIGN KEY (`id_licencia_fk`) REFERENCES `licencias` (`id_licencia`) ON UPDATE CASCADE;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+  MODIFY `id_autor` int
