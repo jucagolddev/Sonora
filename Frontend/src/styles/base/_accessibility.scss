@@ -1,0 +1,44 @@
+// ==========================================================================
+// UTILIDADES DE ACCESIBILIDAD
+// ==========================================================================
+
+/* 
+  Clase .visually-hidden
+  Oculta elementos visualmente pero los mantiene disponibles para lectores de pantalla.
+  Esencial para etiquetas de formulario que se ocultan por diseño visual.
+*/
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 
+  Indicador de Foco Visible Global 
+  Garantiza que todos los elementos interactivos tengan un indicador claro
+  cuando se navega por teclado. WCAG 2.4.7
+*/
+:focus-visible {
+  outline: 3px solid #ff6b00; // Usando color primario naranja
+  outline-offset: 2px;
+}
+
+/* 
+  Refuerzo para inputs y botones
+  A veces focus-visible no se activa como esperamos en ciertos navegadores/elementos,
+  así que aseguramos un feedback visual consistente.
+*/
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+a:focus {
+  outline: 3px solid rgba(255, 107, 0, 0.5); 
+  outline-offset: 1px;
+}

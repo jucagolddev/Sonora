@@ -1,14 +1,30 @@
 <div class="pagina-inicio">
-    <!-- Contenedor principal del buscador con el título de bienvenida -->
-    <div class="contenedor-busqueda-principal">
-        <div class="barra-busqueda">
-            <span class="material-icons-outlined icono-lupa" (click)="buscarSonidos()" style="cursor: pointer;"
-                aria-label="Buscar sonidos" role="button" tabindex="0">search</span>
-            <input type="text" class="input-busqueda" placeholder="Buscar..." [(ngModel)]="terminoBusqueda"
-                (keyup.enter)="buscarSonidos()">
-        </div>
-        <div>
-            ENCUENTRE TODO TIPO DE SONIDOS
+    <!-- HERO MULTIMEDIA SECTION (Block A) -->
+    <div class="hero-section">
+        <video #heroVideo class="hero-video" autoplay loop muted playsinline aria-hidden="true" tabindex="-1">
+            <source src="assets/videos/ondasHSonora.mp4" type="video/mp4">
+            Tu navegador no soporta el elemento de video.
+        </video>
+
+        <div class="hero-overlay">
+            <!-- Contenedor principal del buscador con el título de bienvenida -->
+            <div class="contenedor-busqueda-principal">
+                <div class="barra-busqueda">
+                    <!-- SVG Lupa (Block B) -->
+                    <svg class="icono-svg icono-lupa" (click)="buscarSonidos()" viewBox="0 0 24 24"
+                        aria-label="Buscar sonidos" role="button" tabindex="0">
+                        <path
+                            d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                    </svg>
+                    <label for="search-input" class="visually-hidden">Buscar sonidos</label>
+                    <input type="text" id="search-input" class="input-busqueda" placeholder="Buscar..."
+                        [(ngModel)]="terminoBusqueda" (keyup.enter)="buscarSonidos()">
+                </div>
+                <div>
+                    ENCUENTRE TODO TIPO DE SONIDOS
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -35,7 +51,7 @@
 
     <!-- Sección de Carruseles: Aquí muestro los sonidos destacados y por categorías -->
     <div class="seccion-tops">
-        <h2 class="titulo-principal-tops">tops download</h2>
+        <h2 class="titulo-principal-tops">Sonidos destacados</h2>
 
         <!-- Carrusel 1: Sonidos Populares -->
         <div class="grupo-carrusel">
@@ -43,7 +59,9 @@
             <div class="contenedor-carrusel">
                 <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselPopulares)"
                     aria-label="Mover carrusel a la izquierda">
-                    <span class="material-icons-outlined" aria-hidden="true">arrow_back_ios</span>
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                    </svg>
                 </button>
                 <div class="ventana-carrusel" #carruselPopulares>
                     <div class="pista-carrusel">
@@ -58,7 +76,9 @@
                 </div>
                 <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselPopulares)"
                     aria-label="Mover carrusel a la derecha">
-                    <span class="material-icons-outlined" aria-hidden="true">arrow_forward_ios</span>
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                    </svg>
                 </button>
             </div>
         </div>
@@ -67,16 +87,22 @@
         <div class="grupo-carrusel" *ngIf="sonidosNaturaleza.length > 0">
             <span class="titulo-pill">sonidos de naturaleza</span>
             <div class="contenedor-carrusel">
-                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselNaturaleza)">
-                    <span class="material-icons-outlined">arrow_back_ios</span>
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselNaturaleza)"
+                    aria-label="Anterior">
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                    </svg>
                 </button>
                 <div class="ventana-carrusel" #carruselNaturaleza>
                     <div class="pista-carrusel">
                         <app-sound-card *ngFor="let sonido of sonidosNaturaleza" [sonido]="sonido"></app-sound-card>
                     </div>
                 </div>
-                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselNaturaleza)">
-                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselNaturaleza)"
+                    aria-label="Siguiente">
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                    </svg>
                 </button>
             </div>
         </div>
@@ -85,16 +111,22 @@
         <div class="grupo-carrusel" *ngIf="sonidosInstrumentos.length > 0">
             <span class="titulo-pill">sonidos de instrumentos</span>
             <div class="contenedor-carrusel">
-                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselInstrumentos)">
-                    <span class="material-icons-outlined">arrow_back_ios</span>
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselInstrumentos)"
+                    aria-label="Anterior">
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                    </svg>
                 </button>
                 <div class="ventana-carrusel" #carruselInstrumentos>
                     <div class="pista-carrusel">
                         <app-sound-card *ngFor="let sonido of sonidosInstrumentos" [sonido]="sonido"></app-sound-card>
                     </div>
                 </div>
-                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselInstrumentos)">
-                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselInstrumentos)"
+                    aria-label="Siguiente">
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                    </svg>
                 </button>
             </div>
         </div>
@@ -103,16 +135,22 @@
         <div class="grupo-carrusel" *ngIf="sonidosExtranos.length > 0">
             <span class="titulo-pill">sonidos extraños</span>
             <div class="contenedor-carrusel">
-                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselExtranos)">
-                    <span class="material-icons-outlined">arrow_back_ios</span>
+                <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselExtranos)"
+                    aria-label="Anterior">
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+                    </svg>
                 </button>
                 <div class="ventana-carrusel" #carruselExtranos>
                     <div class="pista-carrusel">
                         <app-sound-card *ngFor="let sonido of sonidosExtranos" [sonido]="sonido"></app-sound-card>
                     </div>
                 </div>
-                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselExtranos)">
-                    <span class="material-icons-outlined">arrow_forward_ios</span>
+                <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselExtranos)"
+                    aria-label="Siguiente">
+                    <svg class="icono-svg" viewBox="0 0 24 24">
+                        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+                    </svg>
                 </button>
             </div>
         </div>

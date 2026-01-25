@@ -101,7 +101,6 @@ export const subirArchivo = (req: Request, res: Response) => {
       // TRANSACCIÓN LÓGICA: AUTOR -> CANCIÓN
 
       // 1. BUSCAR AUTOR EXISTENTE
-      // Nota: Se asume que la columna en BBDD es 'nombre_artistico'
       let [autorDb]: any = await db.query(
         "SELECT id_autor FROM autor WHERE nombre_artistico = ? AND id_usuario_fk = ?",
         [autor, id_usuario_fk],
