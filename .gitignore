@@ -3,7 +3,9 @@ node_modules/
 dist/
 
 # Variables de Entorno
-.env
+# .env (Permitido por el usuario)
+#.env
+
 .env.local
 
 # IDEs y Editores

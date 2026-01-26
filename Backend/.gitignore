@@ -3,7 +3,8 @@ node_modules/
 dist/
 
 # Entorno
-.env
+# .env (Permitido por el usuario)
+# .env
 
 # Archivos de subida (local)
 # Se permiten subir archivos de ejemplo al repo
