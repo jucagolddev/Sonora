@@ -1,252 +1,383 @@
 // src/styles/pages/_home.scss
-@use '../variables' as *;
-@use '../mixins' as *;
+@use "../variables" as *;
+@use "../mixins" as *;
 
 // ==========================================================================
 // PÁGINA: INICIO (HOME)
 // ==========================================================================
 
 .pagina-inicio {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    color: $color-texto;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  color: $color-texto;
 
-    // ----------------------------------------------------------------------
-    // 1. Buscador y Título
-    // ----------------------------------------------------------------------
-    .contenedor-busqueda-principal {
+  // ----------------------------------------------------------------------
+  // 1. Buscador y Título
+  // ----------------------------------------------------------------------
+  .contenedor-busqueda-principal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 40px;
+    gap: 20px;
+
+    .barra-busqueda {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+
+      .icono-lupa {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $color-texto;
+        font-size: 1.2rem;
+      }
+
+      .input-busqueda {
+        width: 100%;
+        background-color: transparent;
+        border: 2px solid $color-acento;
+        border-radius: 50px;
+        padding: 12px 20px 12px 45px;
+        color: $color-texto;
+        font-size: 1rem;
+        outline: none;
+
+        &::placeholder {
+          color: $color-texto-secundario;
+        }
+      }
+    }
+
+    .etiqueta-encuentre {
+      border: 1px solid $color-acento;
+      padding: 8px 20px;
+      color: $color-texto;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+  }
+
+  // ----------------------------------------------------------------------
+  // 2. Sección "Qué es Sonora"
+  // ----------------------------------------------------------------------
+  .seccion-info {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+
+    .caja-info {
+      border: 2px solid $color-acento;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+
+      h2 {
+        color: $color-texto;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        font-weight: normal;
+        text-transform: uppercase;
+      }
+
+      p {
+        color: $color-texto;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+    }
+  }
+
+  // ----------------------------------------------------------------------
+  // 3. Categorías
+  // ----------------------------------------------------------------------
+  .seccion-categorias {
+    text-align: center;
+    margin-bottom: 50px;
+
+    .titulo-seccion {
+      color: $color-acento;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .grid-categorias {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+
+      .boton-categoria {
+        background-color: $color-boton-oscuro-bg; // Fondo oscuro para botones
+        border: 1px solid $color-boton-oscuro-borde;
+        color: $color-texto;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-transform: capitalize;
+
+        &:hover {
+          border-color: $color-acento;
+          color: $color-acento;
+        }
+      }
+    }
+  }
+
+  // ----------------------------------------------------------------------
+  // 4. Secciones Tops Download (Carruseles)
+  // ----------------------------------------------------------------------
+  .seccion-tops {
+    .titulo-principal-tops {
+      color: $color-acento;
+      text-align: center;
+      text-transform: uppercase;
+      margin-bottom: 40px;
+      font-size: 1.8rem;
+    }
+
+    .grupo-carrusel {
+      margin-bottom: 50px;
+      position: relative;
+
+      .titulo-pill {
+        display: inline-block;
+        border: 1px solid $color-acento;
+        border-radius: 20px;
+        padding: 5px 20px;
+        color: $color-texto;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        margin-left: 50px; // Alinear con el inicio del carrusel
+      }
+
+      .contenedor-carrusel {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        margin-bottom: 40px;
+        justify-content: center;
         gap: 20px;
 
-        .barra-busqueda {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
+        .flecha-carrusel {
+          background-color: $color-blanco;
+          border: none;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          color: $color-negro;
+          font-size: 1.2rem;
+          z-index: 10;
+          transition: transform 0.2s;
 
-            .icono-lupa {
-                position: absolute;
-                left: 15px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: $color-texto;
-                font-size: 1.2rem;
-            }
-
-            .input-busqueda {
-                width: 100%;
-                background-color: transparent;
-                border: 2px solid $color-acento;
-                border-radius: 50px;
-                padding: 12px 20px 12px 45px;
-                color: $color-texto;
-                font-size: 1rem;
-                outline: none;
-
-                &::placeholder {
-                    color: $color-texto-secundario;
-                }
-            }
+          &:hover {
+            transform: scale(1.1);
+          }
         }
 
-        .etiqueta-encuentre {
-            border: 1px solid $color-acento;
-            padding: 8px 20px;
-            color: $color-texto;
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-        }
-    }
-
-    // ----------------------------------------------------------------------
-    // 2. Sección "Qué es Sonora"
-    // ----------------------------------------------------------------------
-    .seccion-info {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 50px;
-
-        .caja-info {
-            border: 2px solid $color-acento;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 800px;
-            width: 100%;
-            text-align: center;
-
-            h2 {
-                color: $color-texto;
-                font-size: 1.5rem;
-                margin-bottom: 20px;
-                font-weight: normal;
-                text-transform: uppercase;
-            }
-
-            p {
-                color: $color-texto;
-                margin-bottom: 15px;
-                line-height: 1.6;
-            }
-        }
-    }
-
-    // ----------------------------------------------------------------------
-    // 3. Categorías
-    // ----------------------------------------------------------------------
-    .seccion-categorias {
-        text-align: center;
-        margin-bottom: 50px;
-
-        .titulo-seccion {
-            color: $color-acento;
-            text-transform: uppercase;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
+        .ventana-carrusel {
+          width: 100%;
+          max-width: 900px; // Ajustar según necesidad
+          overflow: hidden;
         }
 
-        .grid-categorias {
+        .pista-carrusel {
+          display: flex;
+          transition: transform 0.5s ease-in-out;
+          gap: 20px; // Espacio entre tarjetas
+        }
+
+        .tarjeta-sonido {
+          flex: 0 0 calc(33.333% - 14px); // 3 tarjetas visibles menos el gap
+          background-color: #1e1e24; // Fondo de tarjeta oscuro
+          border: 1px solid $color-acento;
+          border-radius: 8px;
+          padding: 15px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+
+          .controles-reproductor {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
             gap: 10px;
 
-            .boton-categoria {
-                background-color: #2A2A2A; // Fondo oscuro para botones
-                border: 1px solid #444;
-                color: $color-texto;
-                padding: 8px 16px;
-                font-size: 0.9rem;
+            .slider-progreso {
+              width: 100%;
+              accent-color: $color-acento;
+            }
+
+            .botones-reproduccion {
+              display: flex;
+              justify-content: space-between;
+              color: $color-texto;
+              font-size: 1.2rem;
+
+              i {
                 cursor: pointer;
-                transition: all 0.3s;
-                text-transform: capitalize;
 
                 &:hover {
-                    border-color: $color-acento;
-                    color: $color-acento;
+                  color: $color-acento;
                 }
+              }
             }
+          }
+
+          .info-sonido {
+            font-size: 0.8rem;
+            color: $color-texto-secundario;
+
+            p {
+              margin-bottom: 2px;
+              color: $color-texto;
+              font-weight: bold;
+            }
+          }
         }
+      }
     }
+  }
+}
 
-    // ----------------------------------------------------------------------
-    // 4. Secciones Tops Download (Carruseles)
-    // ----------------------------------------------------------------------
-    .seccion-tops {
-        .titulo-principal-tops {
-            color: $color-acento;
-            text-align: center;
-            text-transform: uppercase;
-            margin-bottom: 40px;
-            font-size: 1.8rem;
-        }
+/* HERO SECTION STYLES */
+.hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 400px; /* Adjust based on desired hero height */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  background-color: #000;
+  margin-bottom: 2rem;
+}
 
-        .grupo-carrusel {
-            margin-bottom: 50px;
-            position: relative;
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5; /* Dim video to make text readable */
+  z-index: 1;
+}
 
-            .titulo-pill {
-                display: inline-block;
-                border: 1px solid $color-acento;
-                border-radius: 20px;
-                padding: 5px 20px;
-                color: $color-texto;
-                text-transform: uppercase;
-                font-size: 0.9rem;
-                margin-bottom: 20px;
-                margin-left: 50px; // Alinear con el inicio del carrusel
-            }
+.hero-overlay {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
 
-            .contenedor-carrusel {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 20px;
+/* VIDEO CONTROLS CUSTOMIZATION */
+.video-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 10px 20px;
+  border-radius: 30px;
+  margin-top: 20px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
-                .flecha-carrusel {
-                    background-color: #fff;
-                    border: none;
-                    border-radius: 50%;
-                    width: 40px;
-                    height: 40px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    cursor: pointer;
-                    color: #000;
-                    font-size: 1.2rem;
-                    z-index: 10;
-                    transition: transform 0.2s;
+.control-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: transform 0.2s ease;
+}
 
-                    &:hover {
-                        transform: scale(1.1);
-                    }
-                }
+.control-btn:hover {
+  transform: scale(1.1);
+}
 
-                .ventana-carrusel {
-                    width: 100%;
-                    max-width: 900px; // Ajustar según necesidad
-                    overflow: hidden;
-                }
+.control-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
 
-                .pista-carrusel {
-                    display: flex;
-                    transition: transform 0.5s ease-in-out;
-                    gap: 20px; // Espacio entre tarjetas
-                }
+.progress-container {
+  width: 200px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+}
 
-                .tarjeta-sonido {
-                    flex: 0 0 calc(33.333% - 14px); // 3 tarjetas visibles menos el gap
-                    background-color: #1E1E24; // Fondo de tarjeta oscuro
-                    border: 1px solid $color-acento;
-                    border-radius: 8px;
-                    padding: 15px;
-                    display: flex;
-                    flex-direction: column;
-                    gap: 10px;
+.progress-bar {
+  height: 100%;
+  background: $color-acento; /* Global Orange Accent */
+  width: 0; /* Dynamic */
+  transition: width 0.1s linear;
+}
 
-                    .controles-reproductor {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 10px;
+/* BLOCK B: SVG DYNAMICS & ANIMATIONS */
 
-                        .slider-progreso {
-                            width: 100%;
-                            accent-color: $color-acento;
-                        }
+/* Generic SVG styling */
+.icono-svg {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+  fill: currentColor; /* Inherit color */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-                        .botones-reproduccion {
-                            display: flex;
-                            justify-content: space-between;
-                            color: $color-texto;
-                            font-size: 1.2rem;
+/* 1. Lupa (Search) Interaction: Rotation and Color Change */
+.icono-lupa {
+  fill: #fff; /* White by default to standout on dark */
+  cursor: pointer;
+}
 
-                            i {
-                                cursor: pointer;
+.icono-lupa:hover {
+  fill: $color-acento; /* Global Orange Accent */
+  transform: scale(1.2) rotate(15deg); /* Requirement: Scale or Path animation */
+}
 
-                                &:hover {
-                                    color: $color-acento;
-                                }
-                            }
-                        }
-                    }
+/* 2. Carousel Arrows Interaction: Shift */
+.flecha-carrusel {
+  /* Existing styles are likely handled elsewhere, but we ensure SVG behaves */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-                    .info-sonido {
-                        font-size: 0.8rem;
-                        color: $color-texto-secundario;
+.flecha-carrusel .icono-svg {
+  fill: #000; /* Arrows inside white circle are black (from existing styles) */
+}
 
-                        p {
-                            margin-bottom: 2px;
-                            color: $color-texto;
-                            font-weight: bold;
-                        }
-                    }
-                }
-            }
-        }
-    }
+.flecha-carrusel.izquierda:hover .icono-svg {
+  transform: translateX(-5px) scale(1.1);
+  fill: $color-acento;
+}
+
+.flecha-carrusel.derecha:hover .icono-svg {
+  transform: translateX(5px) scale(1.1);
+  fill: $color-acento;
 }

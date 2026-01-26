@@ -1,134 +1,267 @@
 // src/styles/pages/_register.scss
-@use '../mixins' as *;
-@use '../variables' as *;
+@use "../mixins" as *;
+@use "../variables" as *;
 
 // ==========================================================================
 // PÁGINA: REGISTRO
 // ==========================================================================
 
 .pagina-registro {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-    padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 20px;
 
-    .tarjeta-registro {
+  .tarjeta-registro {
+    width: 100%;
+    max-width: 900px;
+    border: 2px solid $color-acento;
+    border-radius: 30px;
+    padding: 40px;
+    background-color: transparent;
+
+    .contenido-registro {
+      display: flex;
+      gap: 40px;
+
+      @include responder-a(md) {
+        flex-direction: column-reverse;
+        align-items: center;
+      }
+
+      .columna-izquierda {
+        flex: 1;
         width: 100%;
-        max-width: 900px;
-        border: 2px solid $color-acento;
-        border-radius: 30px;
-        padding: 40px;
-        background-color: transparent;
 
-        .contenido-registro {
+        .formulario-registro {
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+
+          .grupo-formulario {
+            width: 100%;
+
+            .control-formulario {
+              width: 100%;
+              background-color: transparent;
+              border: 2px solid $color-acento; // Borde naranja
+              border-radius: 15px; // Bordes redondeados
+              padding: 12px 20px;
+              color: $color-texto;
+              font-size: 1rem;
+              outline: none;
+
+              &::placeholder {
+                color: $color-texto-secundario;
+              }
+
+              &:focus {
+                box-shadow: 0 0 5px rgba($color-acento, 0.5);
+              }
+            }
+          }
+
+          .acciones-registro {
             display: flex;
-            gap: 40px;
+            justify-content: center;
+            margin-top: 20px;
 
-            @include responder-a(md) {
-                flex-direction: column-reverse;
-                align-items: center;
+            .boton-confirmar {
+              background-color: $color-acento;
+              color: #fff;
+              border: none;
+              border-radius: 25px;
+              padding: 10px 40px;
+              font-size: 1.2rem;
+              text-transform: lowercase;
+              cursor: pointer;
+              transition: background 0.3s;
+
+              &:hover {
+                background-color: $color-acento-light;
+              }
             }
+          }
 
-            .columna-izquierda {
-                flex: 1;
-                width: 100%;
+          .enlaces-extra {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: $color-negro;
 
-                .formulario-registro {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 15px;
+            a {
+              color: $color-opcion-bg; // Usando color oscuro definido
+              text-decoration: none;
 
-                    .grupo-formulario {
-                        width: 100%;
-
-                        .control-formulario {
-                            width: 100%;
-                            background-color: transparent;
-                            border: 2px solid $color-acento; // Borde naranja
-                            border-radius: 15px; // Bordes redondeados
-                            padding: 12px 20px;
-                            color: $color-texto;
-                            font-size: 1rem;
-                            outline: none;
-
-                            &::placeholder {
-                                color: $color-texto-secundario;
-                            }
-
-                            &:focus {
-                                box-shadow: 0 0 5px rgba($color-acento, 0.5);
-                            }
-                        }
-                    }
-
-                    .acciones-registro {
-                        display: flex;
-                        justify-content: center;
-                        margin-top: 20px;
-
-                        .boton-confirmar {
-                            background-color: $color-acento;
-                            color: #fff;
-                            border: none;
-                            border-radius: 25px;
-                            padding: 10px 40px;
-                            font-size: 1.2rem;
-                            text-transform: lowercase; 
-                            cursor: pointer;
-                            transition: background 0.3s;
-
-                            &:hover {
-                                background-color: $color-acento-light;
-                            }
-                        }
-                    }
-
-                    .enlaces-extra {
-                        display: flex;
-                        justify-content: center;
-                        gap: 10px;
-                        margin-top: 10px;
-                        font-size: 0.8rem;
-                        color: #000; 
-
-                        a {
-                            color: #333;
-                            text-decoration: none;
-
-                            &:hover {
-                                text-decoration: underline;
-                            }
-                        }
-                    }
-                }
+              &:hover {
+                text-decoration: underline;
+              }
             }
-
-            .columna-derecha {
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                padding-top: 20px;
-
-                .circulo-perfil {
-                    width: 150px;
-                    height: 150px;
-                    background-color: $color-acento;
-                    border-radius: 50%;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                    align-items: center;
-                    color: #fff;
-                    font-size: 1.2rem;
-                    text-align: center;
-                    line-height: 1.2;
-
-                    span {
-                        display: block;
-                    }
-                }
-            }
+          }
         }
+      }
+
+      .columna-derecha {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding-top: 20px;
+
+        .circulo-perfil {
+          width: 150px;
+          height: 150px;
+          background-color: $color-acento;
+          border-radius: 50%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          color: #fff;
+          font-size: 1.2rem;
+          text-align: center;
+          line-height: 1.2;
+
+          span {
+            display: block;
+          }
+        }
+      }
     }
+  }
+}
+
+/* Micro-interactions & SVG Styles */
+
+/* 1. INPUT INTERACTIONS (Block C) */
+.control-formulario {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  // Basic styles are inherited from styles/pages/_register.scss (global)
+  // We only add the interactive 'focus' and validation states here
+
+  &:focus {
+    outline: none;
+    border-color: $color-acento; // #FF6B00
+    box-shadow: 0 0 10px rgba($color-acento, 0.3);
+    transform: scale(1.01);
+  }
+
+  &.ng-invalid.ng-touched {
+    border-color: #ff5252; // Red for error is standard/universal
+    animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+/* 2. BUTTON STATES & SPINNER */
+.boton-confirmar {
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  // Hover/Active states extending the global styles
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    // Background color change is handled by global styles (hover: $color-acento-light)
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  // Disabled state for loading
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+    transform: none;
+    background-color: grayscale($color-acento); // Desaturated orange
+  }
+}
+
+.spinner-loader {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 3. SVG DYNAMICS (Block B) - LOGO */
+.logo-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.sound-wave {
+  transform-origin: center;
+  transition: stroke 0.3s ease;
+}
+
+/* Automatic Animation */
+.wave-1,
+.wave-2,
+.wave-3 {
+  animation: wave-pulse 3s infinite ease-in-out;
+}
+.wave-1 {
+  animation-delay: 0s;
+}
+.wave-2 {
+  animation-delay: 0.2s;
+}
+.wave-3 {
+  animation-delay: 0.4s;
+}
+
+@keyframes wave-pulse {
+  0%,
+  100% {
+    stroke-opacity: 1;
+    transform: scaleY(1);
+  }
+  50% {
+    stroke-opacity: 0.6;
+    transform: scaleY(0.8);
+  }
+}
+
+/* Interaction on Hover */
+.circulo-perfil:hover .logo-svg .sound-wave {
+  stroke: $color-acento; // Use the global orange accent
+  animation-duration: 0.8s; /* Speed up */
 }

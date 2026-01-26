@@ -7,8 +7,5 @@
 }
 
 .tarjeta-sonido {
-  /* Ensure cards have some basic styling if global styles don't cover everything or if flex context was needed */
-  /* Assuming global .tarjeta-sonido handles background, border-radius etc. */
-  /* Just ensuring it takes space nicely in grid */
   min-width: 0;
 }

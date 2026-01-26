@@ -2,11 +2,9 @@
 node_modules/
 dist/
 
-# Variables de Entorno
-# .env (Permitido por el usuario)
-#.env
-
-.env.local
+# Variables de Entorno (El usuario quiere subir el .env)
+# .env
+# .env.local
 
 # IDEs y Editores
 .vscode/
@@ -26,7 +24,8 @@ yarn-error.log*
 .angular/
 .cache/
 
-# Multimedia (Opcional - si no se quieren versionar las subidas locales)
-# Mantenemos .gitkeep o estructura básica si es necesario, pero ignoramos el contenido
-/Backend/archivos/*
-!/Backend/archivos/.gitkeep
+# Multimedia
+# Forzamos la inclusión de la carpeta de archivos y el SQL
+!/Backend/archivos/
+!/Backend/*.sql
+!/Backend/.env

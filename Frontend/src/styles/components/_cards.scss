@@ -17,7 +17,7 @@
   &:hover {
     transform: translateY(-4px);
     border-color: $color-acento;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 10px 20px rgba($color-negro, 0.3);
   }
 
   // Cabecera: Descarga y Duración

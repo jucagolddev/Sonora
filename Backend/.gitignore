@@ -3,7 +3,6 @@ node_modules/
 dist/
 
 # Entorno
-# .env (Permitido por el usuario)
 # .env
 
 # Archivos de subida (local)

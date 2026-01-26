@@ -5,24 +5,24 @@
 // ==========================================================================
 // Este archivo importa todos los parciales SCSS en el orden correcto.
 
-// 1. Configuración Base (Variables, Mixins, Reset)
-@use 'variables' as *;
-@use 'mixins' as *;
-@use 'reset';
-@use 'base/accessibility';
-
+@use "variables" as *;
+@use "mixins" as *;
+@use "reset";
+@use "base/accessibility";
 
 // 2. Componentes (Botones, Inputs, Tarjetas)
-@use 'components/buttons';
-@use 'components/inputs';
-@use 'components/cards';
+@use "components/buttons";
+@use "components/inputs";
+@use "components/cards";
 
 // 3. Layout (Estructura general: Cabecera, Pie de página)
-@use 'layout/header';
-@use 'layout/footer';
+@use "layout/header";
+@use "layout/footer";
 
 // 4. Páginas (Estilos específicos por vista)
-@use 'pages/home';
-@use 'pages/login';
-@use 'pages/register';
-@use 'pages/upload';
+@use "pages/home";
+@use "pages/login";
+@use "pages/register";
+@use "pages/upload";
+@use "pages/search";
+@use "pages/category";

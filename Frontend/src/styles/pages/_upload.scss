@@ -1,14 +1,203 @@
-select.control-formulario {
-  background-color: transparent;
-  color: #fff;
-  padding-right: 2rem;
-}
-select.control-formulario option {
-  background-color: #333;
-  color: #fff;
+@use "../variables" as *;
+@use "../mixins" as *;
+
+// ==========================================================================
+// PÁGINA: SUBIDA DE ARCHIVOS (UPLOAD)
+// ==========================================================================
+// Mantiene estructura de pagina-autenticacion pero fuerza estilos específicos
+// para coincidir con el Login (transparente + borde naranja).
+
+.pagina-autenticacion.pagina-subida-modo {
+  .tarjeta-autenticacion {
+    max-width: 1000px;
+    padding: 0;
+    flex-direction: row;
+    overflow: hidden;
+
+    @media (max-width: 900px) {
+      flex-direction: column;
+      max-width: 600px;
+    }
+
+    // Adaptación del formulario
+    .formulario-autenticacion {
+      gap: 30px; // Aumentado espacio entre campos como se pidió
+
+      .grupo-formulario {
+        width: 100%;
+
+        // ESTILOS ESTRICTOS TIPO LOGIN
+        // Aplicamos directamente las propiedades para cerciorarnos de que se ven igual
+        // independientemente de la herencia estructural.
+
+        .control-formulario,
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+          width: 100%;
+          background: transparent !important; // FORZADO TRANSPARENTE
+          border: 2px solid $color-acento !important; // FORZADO BORDE NARANJA
+          color: $color-texto !important; // TEXTO BLANCO
+          padding: 12px 20px;
+          border-radius: 15px;
+          outline: none;
+          font-family: inherit;
+          font-size: 1rem;
+          transition: all 0.3s ease;
+
+          &::placeholder {
+            color: rgba($color-texto, 0.6);
+          }
+
+          &:focus {
+            box-shadow: 0 0 10px rgba($color-acento, 0.4);
+          }
+        }
+
+        // Estilo específico para el label de archivo (botón falso)
+        .label-fichero {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          // Mismos estilos que los inputs
+          background: transparent !important;
+          border: 2px solid $color-acento !important;
+          border-radius: 15px;
+          color: $color-texto;
+          font-weight: bold;
+          text-align: center;
+
+          &:hover {
+            background: rgba($color-acento, 0.1) !important;
+          }
+        }
+
+        // Ajustes para Select
+        select.control-formulario {
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ff6b00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 1rem center;
+          background-size: 1.2em;
+
+          option {
+            background-color: $color-panel;
+            color: $color-texto;
+          }
+        }
+      }
+
+      // Estilo para el botón confirmar
+      .acciones-autenticacion {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+
+        .boton-confirmar {
+          background-color: $color-acento;
+          color: $color-blanco;
+          border: none;
+          border-radius: 25px;
+          padding: 10px 40px;
+          font-size: 1.2rem;
+          cursor: pointer;
+          transition: background 0.3s;
+          text-transform: uppercase;
+          font-weight: bold;
+
+          &:hover {
+            background-color: lighten($color-acento, 10%);
+          }
+
+          &:disabled {
+            background-color: grayscale($color-acento);
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+
+    // Columna Izquierda
+    .columna-izquierda {
+      flex: 1.2;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    // Columna Derecha de Visuales
+    .columna-derecha {
+      flex: 0.8;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: rgba($color-acento, 0.05);
+      border-left: 2px solid $color-acento;
+
+      @media (max-width: 900px) {
+        border-left: none;
+        border-top: 2px solid $color-acento;
+        width: 100%;
+        padding: 30px;
+      }
+    }
+  }
+
+  // Componentes Visuales
+  .zona-carga {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .flecha-subida {
+      .icono-subida {
+        font-size: 5rem;
+        color: $color-acento;
+        animation: flotar 3s ease-in-out infinite;
+      }
+    }
+
+    .barra-carga {
+      width: 100%;
+      height: 15px;
+      background-color: transparent;
+      border: 2px solid $color-acento;
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 2px;
+
+      .progreso {
+        height: 100%;
+        background-color: $color-acento;
+        width: 0%;
+        border-radius: 6px;
+        transition: width 0.3s ease-out;
+      }
+    }
+
+    .porcentaje {
+      font-family: "Courier New", monospace;
+      font-size: 1.5rem;
+      color: $color-texto;
+      font-weight: bold;
+    }
+  }
 }
 
-.icono-subida {
-  font-size: 4rem;
-  color: #ff9800;
+@keyframes flotar {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }

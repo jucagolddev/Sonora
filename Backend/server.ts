@@ -41,8 +41,15 @@ app.use(express.json());
 /**
  * Middleware: Archivos Estáticos
  * Permite acceder a los archivos subidos (audio/video) desde el navegador.
+ * Se añade configuración de caché para mejorar el rendimiento.
  */
-app.use("/archivos", express.static(path.join(__dirname, "archivos")));
+app.use(
+  "/archivos",
+  express.static(path.join(__dirname, "archivos"), {
+    maxAge: "31536000", // 1 año en milisegundos
+    immutable: true,
+  }),
+);
 
 // -----------------------------------------------------------------
 // CONEXIÓN DE RUTAS (ROUTING)

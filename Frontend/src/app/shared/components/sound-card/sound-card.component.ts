@@ -14,7 +14,6 @@ import { Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './sound-card.component.html',
-  styleUrls: [], // Estilos globales en _cards.scss
 })
 export class SoundCardComponent implements OnInit, OnDestroy {
   @Input() sonido!: Sound;

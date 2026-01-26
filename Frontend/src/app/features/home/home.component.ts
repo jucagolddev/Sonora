@@ -6,7 +6,13 @@
  *              Incluye carruseles por categoría y reproductor de audio integrado.
  */
 
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { SoundService } from '../../core/services/sound.service';
 import { Sound } from '../../core/models/sound.interface';
@@ -16,6 +22,9 @@ import { Sound } from '../../core/models/sound.interface';
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  // HERO VIDEO (Block A)
+  @ViewChild('heroVideo') heroVideo!: ElementRef<HTMLVideoElement>;
+
   // Estado de la búsqueda
   terminoBusqueda: string = '';
 

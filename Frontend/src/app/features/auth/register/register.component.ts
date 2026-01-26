@@ -18,6 +18,7 @@ import { AuthService } from '../../../core/services/auth.service';
 export class RegisterComponent {
   // Formulario reactivo para capturar múltiples datos del usuario
   formularioRegistro: FormGroup;
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -39,12 +40,14 @@ export class RegisterComponent {
    */
   onSubmit() {
     if (this.formularioRegistro.valid) {
+      this.isLoading = true; // Block C: Feedback interactivo
       const pass = this.formularioRegistro.get('password')?.value;
       const confirm = this.formularioRegistro.get('confirmPassword')?.value;
 
       // Validación extra en cliente: coincidencia de contraseñas
       if (pass !== confirm) {
         alert('Las contraseñas no coinciden.');
+        this.isLoading = false;
         return;
       }
 
@@ -61,6 +64,7 @@ export class RegisterComponent {
       // Comunicación con el servicio
       this.authService.register(datosParaBackend).subscribe({
         next: (res) => {
+          this.isLoading = false;
           console.log('Registro exitoso:', res);
           alert(
             '¡Usuario registrado con éxito! Sesión iniciada automáticamente.',
@@ -68,6 +72,7 @@ export class RegisterComponent {
           this.router.navigate(['/']);
         },
         error: (err) => {
+          this.isLoading = false;
           console.error('Error detallado en registro:', err);
           // Intentamos mostrar el mensaje específico del backend si existe
           const msg =
@@ -77,7 +82,9 @@ export class RegisterComponent {
         },
       });
     } else {
+      // Block C: Feedback error visual (podría añadirse wiggle animation aquí)
       alert('Por favor, completa todos los campos requeridos correctamente.');
+      this.formularioRegistro.markAllAsTouched();
     }
   }
 }

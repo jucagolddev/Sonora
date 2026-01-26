@@ -1,87 +1,77 @@
-<div class="pagina-subida">
-    <div class="tarjeta-subida">
-        <div class="contenido-subida">
+<div class="pagina-autenticacion pagina-subida-modo">
+    <div class="tarjeta-autenticacion">
 
-            <div class="columna-izquierda">
-                <form class="formulario-subida" [formGroup]="formularioSubida" (ngSubmit)="onSubmit()">
+        <!-- COLUMNA IZQUIERDA: FORMULARIO -->
+        <div class="columna-izquierda">
+            <h2 style="text-align: center; margin-bottom: 1.5rem; color: white;">Subir Música</h2>
 
-                    <div class="grupo-formulario">
-                        <!-- Input de archivo oculto personalizado -->
-                        <input type="file" id="file-upload" (change)="onFileSelected($event)"
-                            accept=".mp3, .mp4, audio/*, video/mp4" style="display: none;">
-                        <!-- Label que actúa como botón de subida -->
-                        <label for="file-upload" class="control-formulario" style="cursor: pointer; display: block;">
-                            {{ nombreArchivo || 'Introduzca el archivo (MP3, MP4...)' }}
-                        </label>
-                    </div>
+            <form class="formulario-autenticacion" [formGroup]="formularioSubida" (ngSubmit)="onSubmit()">
 
-                    <div class="grupo-formulario">
-                        <label for="titulo" class="visually-hidden">Título de la canción</label>
-                        <input type="text" id="titulo" formControlName="titulo" placeholder="Nombre el archivo"
-                            class="control-formulario">
-                    </div>
-
-                    <div class="grupo-formulario">
-                        <label for="categoria-hidden" class="visually-hidden">Categoría (oculto)</label>
-                        <input type="text" id="categoria-hidden" formControlName="categoria"
-                            placeholder="Seleccione categoria" class="control-formulario" [hidden]="true">
-
-                        <!-- Desplegable de categorías estilizado -->
-                        <label for="categoria" class="visually-hidden">Categoría</label>
-                        <select id="categoria" class="control-formulario" formControlName="categoria">
-                            <option value="" disabled selected>Seleccione categoria</option>
-                            <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
-                        </select>
-                    </div>
-
-                    <div class="grupo-formulario">
-                        <label for="autor" class="visually-hidden">Autor</label>
-                        <input type="text" id="autor" formControlName="autor" placeholder="Autor"
-                            class="control-formulario">
-                    </div>
-
-                    <div class="grupo-formulario">
-                        <label for="descripcion" class="visually-hidden">Descripción</label>
-                        <input type="text" id="descripcion" formControlName="descripcion" placeholder="Descripción"
-                            class="control-formulario">
-                    </div>
-
-                    <div class="grupo-formulario">
-                        <input type="text" formControlName="notas" placeholder="" class="control-formulario">
-                    </div>
-
-
-                    <div class="acciones-subida">
-                        <!-- Deshabilito el botón si no hay archivo o el formulario es inválido -->
-                        <button type="submit" class="boton-confirmar"
-                            [disabled]="formularioSubida.invalid || !archivoSeleccionado">
-                            confirmar
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-
-            <div class="columna-derecha">
-                <div class="circulo-perfil">
-                    <span>img</span>
-                    <span>perfil</span>
+                <div class="grupo-formulario">
+                    <label for="titulo" class="visually-hidden">Título de la canción</label>
+                    <input type="text" id="titulo" formControlName="titulo" placeholder="Nombre el archivo"
+                        class="control-formulario">
                 </div>
 
-                <div class="zona-carga">
-                    <div class="flecha-subida">
-                        <span class="material-icons-outlined icono-subida">upload</span>
-                    </div>
+                <div class="grupo-formulario">
+                    <label for="categoria-hidden" class="visually-hidden">Categoría (oculto)</label>
+                    <input type="text" id="categoria-hidden" formControlName="categoria"
+                        placeholder="Seleccione categoria" class="control-formulario" [hidden]="true">
 
-                    <!-- Barra de progreso visual -->
-                    <div class="barra-carga" role="progressbar" [attr.aria-valuenow]="porcentaje" aria-valuemin="0"
-                        aria-valuemax="100" aria-label="Progreso de subida">
-                        <div class="progreso" [style.width.%]="porcentaje"></div>
-                    </div>
-                    <p class="porcentaje">{{ porcentaje }}%</p>
+                    <!-- Desplegable de categorías estilizado -->
+                    <label for="categoria" class="visually-hidden">Categoría</label>
+                    <select id="categoria" class="control-formulario" formControlName="categoria">
+                        <option value="" disabled selected>Seleccione categoria</option>
+                        <option *ngFor="let cat of categorias" [value]="cat">{{ cat }}</option>
+                    </select>
                 </div>
-            </div>
 
+                <div class="grupo-formulario">
+                    <label for="autor" class="visually-hidden">Autor</label>
+                    <input type="text" id="autor" formControlName="autor" placeholder="Autor"
+                        class="control-formulario">
+                </div>
+
+                <div class="grupo-formulario">
+                    <label for="descripcion" class="visually-hidden">Descripción</label>
+                    <input type="text" id="descripcion" formControlName="descripcion" placeholder="Descripción"
+                        class="control-formulario">
+                </div>
+
+                <div class="grupo-formulario">
+                    <input type="text" formControlName="notas" placeholder="" class="control-formulario">
+                </div>
+
+
+                <div class="acciones-subida">
+                    <!-- Deshabilito el botón si no hay archivo o el formulario es inválido -->
+                    <button type="submit" class="boton-confirmar"
+                        [disabled]="formularioSubida.invalid || !archivoSeleccionado">
+                        confirmar
+                    </button>
+                </div>
+            </form>
         </div>
+
+        <div class="columna-derecha">
+            <div class="circulo-perfil">
+                <span>img</span>
+                <span>perfil</span>
+            </div>
+
+            <div class="zona-carga">
+                <div class="flecha-subida">
+                    <span class="material-icons-outlined icono-subida">upload</span>
+                </div>
+
+                <!-- Barra de progreso visual -->
+                <div class="barra-carga" role="progressbar" [attr.aria-valuenow]="porcentaje" aria-valuemin="0"
+                    aria-valuemax="100" aria-label="Progreso de subida">
+                    <div class="progreso" [style.width.%]="porcentaje"></div>
+                </div>
+                <p class="porcentaje">{{ porcentaje }}%</p>
+            </div>
+        </div>
+
     </div>
 </div>

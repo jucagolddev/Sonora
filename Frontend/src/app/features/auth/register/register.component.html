@@ -54,7 +54,10 @@
 
                     <div class="acciones-registro">
                         <button type="submit" class="boton-confirmar"
-                            [disabled]="formularioRegistro.invalid">confirmar</button>
+                            [disabled]="formularioRegistro.invalid || isLoading" [class.loading]="isLoading">
+                            <span *ngIf="!isLoading">confirmar</span>
+                            <span *ngIf="isLoading" class="spinner-loader"></span>
+                        </button>
                     </div>
 
                     <div class="enlaces-extra">
