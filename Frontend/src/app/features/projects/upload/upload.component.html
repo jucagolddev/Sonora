@@ -1,5 +1,5 @@
-<div class="pagina-autenticacion pagina-subida-modo">
-    <div class="tarjeta-autenticacion">
+<main class="pagina-autenticacion pagina-subida-modo">
+    <section class="tarjeta-autenticacion">
 
         <!-- COLUMNA IZQUIERDA: FORMULARIO -->
         <div class="columna-izquierda">
@@ -9,7 +9,7 @@
 
                 <div class="grupo-formulario">
                     <label for="titulo" class="visually-hidden">Título de la canción</label>
-                    <input type="text" id="titulo" formControlName="titulo" placeholder="Nombre el archivo"
+                    <input type="text" id="titulo" formControlName="titulo" placeholder="Título de la canción"
                         class="control-formulario">
                 </div>
 
@@ -33,13 +33,21 @@
                 </div>
 
                 <div class="grupo-formulario">
+                    <label for="nombreArchivo" class="visually-hidden">Nombre el archivo</label>
+                    <input type="text" id="nombreArchivo" formControlName="nombreArchivo"
+                        placeholder="Nombre el archivo" class="control-formulario" readonly (click)="fileInput.click()"
+                        style="cursor: pointer;">
+                </div>
+
+                <div class="grupo-formulario">
                     <label for="descripcion" class="visually-hidden">Descripción</label>
                     <input type="text" id="descripcion" formControlName="descripcion" placeholder="Descripción"
                         class="control-formulario">
                 </div>
 
                 <div class="grupo-formulario">
-                    <input type="text" formControlName="notas" placeholder="" class="control-formulario">
+                    <input type="text" formControlName="notas" placeholder="Notas adicionales"
+                        class="control-formulario">
                 </div>
 
 
@@ -54,15 +62,20 @@
         </div>
 
         <div class="columna-derecha">
-            <div class="circulo-perfil">
-                <span>img</span>
-                <span>perfil</span>
-            </div>
 
-            <div class="zona-carga">
+            <!-- Input de archivo oculto -->
+            <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept="audio/*,video/mp4" />
+
+            <!-- Zona de carga clickable que activa el input -->
+            <div class="zona-carga" (click)="fileInput.click()" style="cursor: pointer;" tabindex="0"
+                (keydown.enter)="fileInput.click()" aria-label="Seleccionar archivo para subir" role="button">
                 <div class="flecha-subida">
                     <span class="material-icons-outlined icono-subida">upload</span>
                 </div>
+
+                <!-- Muestra nombre del archivo si existe, o instrucción si no -->
+                <p *ngIf="!archivoSeleccionado" style="margin-top: 10px;">Haz clic para seleccionar un archivo</p>
+                <p *ngIf="archivoSeleccionado" style="margin-top: 10px; font-weight: bold;">{{ nombreArchivo }}</p>
 
                 <!-- Barra de progreso visual -->
                 <div class="barra-carga" role="progressbar" [attr.aria-valuenow]="porcentaje" aria-valuemin="0"
@@ -73,5 +86,5 @@
             </div>
         </div>
 
-    </div>
-</div>
+    </section>
+</main>

@@ -100,7 +100,7 @@ export const subirArchivo = (req: Request, res: Response) => {
     try {
       // TRANSACCIÓN LÓGICA: AUTOR -> CANCIÓN
 
-      // 1. BUSCAR AUTOR EXISTENTE
+      // 1. Búsqueda de autor existente
       let [autorDb]: any = await db.query(
         "SELECT id_autor FROM autor WHERE nombre_artistico = ? AND id_usuario_fk = ?",
         [autor, id_usuario_fk],
@@ -109,11 +109,11 @@ export const subirArchivo = (req: Request, res: Response) => {
       let id_autor_final;
 
       if (autorDb.length > 0) {
-        // El autor ya existe
+        // Autor existente
         id_autor_final = autorDb[0].id_autor;
       } else {
-        // 2. CREAR NUEVO AUTOR
-        // Si no existe, lo insertamos en la tabla 'autor'
+        // 2. Creación de nuevo autor
+        // Si no existe, se inserta en la tabla 'autor'
         const [nuevoAutor]: any = await db.query(
           "INSERT INTO autor (nombre_artistico, id_usuario_fk) VALUES (?, ?)",
           [autor, id_usuario_fk],
@@ -121,9 +121,9 @@ export const subirArchivo = (req: Request, res: Response) => {
         id_autor_final = nuevoAutor.insertId;
       }
 
-      // 3. INSERTAR REGISTRO DE CANCIÓN
+      // 3. Inserción de registro de canción
       // Se asocia con el autor y una licencia por defecto (id_licencia_fk = 1)
-      // Se incluye la categoría recibida del frontend (opcional)
+      // Se incluye la categoría recibida (opcional)
       const categoriaFinal = req.body.categoria || null;
 
       const sqlCancion = `
@@ -139,19 +139,15 @@ export const subirArchivo = (req: Request, res: Response) => {
         categoriaFinal,
       ]);
 
-      res
-        .status(200)
-        .json({
-          mensaje: "Archivo subido y metadatos registrados correctamente.",
-        });
+      res.status(200).json({
+        mensaje: "Archivo subido y metadatos registrados correctamente.",
+      });
     } catch (error: any) {
       console.error("Error en base de datos al subir archivo:", error);
-      res
-        .status(500)
-        .json({
-          mensaje: "Error al guardar información en la base de datos.",
-          detalle: error.message,
-        });
+      res.status(500).json({
+        mensaje: "Error al guardar información en la base de datos.",
+        detalle: error.message,
+      });
     }
   });
 };

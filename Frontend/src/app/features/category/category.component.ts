@@ -6,7 +6,7 @@ import { Sound } from '../../core/models/sound.interface';
 /**
  * COMPONENTE DE CATEGORÍA (CategoryComponent)
  * ------------------------------------------------------------------
- * Muestra el catálogo de sonidos filtrado por una categoría específica.
+ * Visualiza el catálogo de sonidos filtrado por una categoría específica.
  * Obtiene el nombre de la categoría desde los parámetros de la URL.
  */
 @Component({

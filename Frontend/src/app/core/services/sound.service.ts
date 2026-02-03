@@ -26,13 +26,9 @@ export class SoundService {
   constructor(private http: HttpClient) {}
 
   /**
-   * Obtener todos los sonidos desde el API.
-   * @returns Observable con el array de sonidos.
-   */
-  /**
-   * Obtener todos los sonidos desde el API.
-   * opcionalmente filtrados por categoría.
-   * @param categoria Filtro opcional por categoría
+   * Obtiene todos los sonidos desde el API, con filtrado opcional por categoría.
+   *
+   * @param categoria Filtro opcional por categoría.
    * @returns Observable con el array de sonidos.
    */
   getAllSounds(categoria?: string): Observable<Sound[]> {

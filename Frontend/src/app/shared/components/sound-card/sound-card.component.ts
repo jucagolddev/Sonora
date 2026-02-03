@@ -7,7 +7,7 @@ import { Subscription } from 'rxjs';
 /**
  * COMPONENTE: SoundCardComponent
  * -------------------------------------------------------------------
- * Representa una tarjeta de sonido individual con controles completos.
+ * Gestiona una tarjeta de sonido individual con controles completos de reproducción y descarga.
  */
 @Component({
   selector: 'app-sound-card',
