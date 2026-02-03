@@ -6,7 +6,7 @@ import { Sound } from '../../core/models/sound.interface';
 /**
  * COMPONENTE DE BÚSQUEDA (SearchComponent)
  * ------------------------------------------------------------------
- * Maneja la lógica de filtrado de sonidos basada en un término de búsqueda.
+ * Gestiona la lógica de filtrado de sonidos basada en un término de búsqueda.
  * Visualiza los resultados en tiempo real según el parámetro de la URL.
  */
 @Component({

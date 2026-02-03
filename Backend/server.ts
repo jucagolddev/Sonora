@@ -16,7 +16,7 @@ import audioRoutes from "./routes/audio_routes";
 /**
  * Inicialización de la Aplicación Express
  * -------------------------------------------------------------------
- * Crea la instancia principal del servidor que gestionará las peticiones HTTP.
+ * Crea la instancia principal del servidor para gestionar las peticiones HTTP.
  */
 const app = express();
 const PORT = process.env.PORT || 3000;

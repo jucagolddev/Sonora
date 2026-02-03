@@ -20,14 +20,11 @@ import db from "../config/db";
  */
 
 /**
- * Obtener listado completo de canciones
- * @param req
- * @param res
- */
-/**
- * Obtener listado completo de canciones
- * @param req
- * @param res
+ * Obtiene el listado completo de canciones.
+ * Soporta filtrado opcional por categoría mediante query params.
+ *
+ * @param req Petición HTTP.
+ * @param res Respuesta HTTP.
  */
 export const obtenerTodos = async (req: Request, res: Response) => {
   try {

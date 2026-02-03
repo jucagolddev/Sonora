@@ -31,9 +31,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   // Listas de sonidos para los carruseles (Requeridas por el template)
   listaSonidos: Sound[] = [];
   categorias: string[] = [];
-  sonidosNaturaleza: Sound[] = [];
-  sonidosInstrumentos: Sound[] = [];
-  sonidosExtranos: Sound[] = [];
+
+  // Agrupación dinámica de sonidos por categoría para carruseles
+  carruselesDinamicos: { nombre: string; sonidos: Sound[] }[] = [];
 
   constructor(
     private router: Router,
@@ -56,25 +56,45 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Cargar Categorías
     this.soundService.getCategories().subscribe({
       next: (cats) => {
-        this.categorias = cats;
+        // Barajar aleatoriamente y seleccionar entre 10 y 15
+        const numRandom = Math.floor(Math.random() * 6) + 10; // Entre 10 y 15
+        this.categorias = cats
+          .sort(() => Math.random() - 0.5)
+          .slice(0, numRandom);
       },
-      error: (err) => console.error('Error al cargar categorías:', err),
+      error: (err) => console.error('Error al cargar la categoría:', err),
     });
 
     // Cargar Sonidos
     this.soundService.getAllSounds().subscribe({
       next: (sonidos) => {
         this.listaSonidos = sonidos;
-        // Filtrado por categorías para los diferentes carruseles de la portada
-        this.sonidosNaturaleza = sonidos.filter(
-          (s) => s.categoria.toLowerCase() === 'naturaleza',
+
+        // Organizar carruseles dinámicamente
+        const grupos: { [key: string]: Sound[] } = {};
+
+        sonidos.forEach((s) => {
+          if (!grupos[s.categoria]) {
+            grupos[s.categoria] = [];
+          }
+          grupos[s.categoria].push(s);
+        });
+
+        // Obtener nombres de categorías que tienen sonidos
+        const nombresCategorias = Object.keys(grupos);
+
+        // Barajar aleatoriamente las categorías
+        const categoriasBarajadas = nombresCategorias.sort(
+          () => Math.random() - 0.5,
         );
-        this.sonidosInstrumentos = sonidos.filter((s) =>
-          s.categoria.toLowerCase().includes('instrumento'),
-        );
-        this.sonidosExtranos = sonidos.filter((s) =>
-          s.categoria.toLowerCase().includes('extraño'),
-        );
+
+        // Seleccionar hasta 3 aleatorias
+        this.carruselesDinamicos = categoriasBarajadas
+          .slice(0, 3)
+          .map((cat) => ({
+            nombre: cat,
+            sonidos: grupos[cat],
+          }));
       },
       error: (err) => console.error('Error al cargar datos en Home:', err),
     });

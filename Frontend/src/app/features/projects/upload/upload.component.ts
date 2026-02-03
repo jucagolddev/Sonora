@@ -2,7 +2,7 @@
  * ARQUITECTURA DE SOFTWARE - SONORA V2
  * -------------------------------------------------------------------
  * Módulo: Componente de Subida de Archivos
- * Descripción: Permite al usuario cargar audio/video al servidor.
+ * Descripción: Permite la carga de audio/video al servidor.
  *              Implementa validación de tipos, barra de progreso y
  *              vinculación de metadatos (título, autor, categoría).
  */
@@ -41,6 +41,7 @@ export class UploadComponent implements OnInit {
       autor: ['', Validators.required],
       categoria: ['', Validators.required],
       descripcion: ['', Validators.required],
+      nombreArchivo: ['', Validators.required], // Nuevo campo para el nombre del archivo
       notas: [''],
     });
   }
@@ -74,6 +75,7 @@ export class UploadComponent implements OnInit {
       }
       this.archivoSeleccionado = file;
       this.nombreArchivo = file.name;
+      this.formularioSubida.patchValue({ nombreArchivo: file.name });
     }
   }
 
