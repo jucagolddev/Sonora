@@ -90,10 +90,10 @@
       }
 
       // Estilo para el botón confirmar
-      .acciones-autenticacion {
+      .acciones-subida {
         display: flex;
         justify-content: center;
-        margin-top: 10px;
+        margin-top: 50px; // Aumentado espacio vertical (de 10px a 50px)
 
         .boton-confirmar {
           background-color: $color-acento;
@@ -101,6 +101,8 @@
           border: none;
           border-radius: 25px;
           padding: 10px 40px;
+          min-width: 200px;
+          width: 50%; // Ancho reducido (antes era implícito o lleno)
           font-size: 1.2rem;
           cursor: pointer;
           transition: background 0.3s;
