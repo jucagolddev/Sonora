@@ -10,6 +10,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Sound } from '../models/sound.interface';
+import { NotificacionService } from './notificacion.service';
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,7 @@ export class AudioService {
   private durationSubject = new BehaviorSubject<number>(0);
   public duration$ = this.durationSubject.asObservable();
 
-  constructor() {
+  constructor(private notificacionService: NotificacionService) {
     // Configurar listeners del objeto Audio
     this.audio.ontimeupdate = () => {
       if (this.audio.duration) {
@@ -59,7 +60,7 @@ export class AudioService {
     this.audio.onerror = (e) => {
       console.error('Error en AudioService:', e);
       this.isPlayingSubject.next(false);
-      alert('No se pudo cargar el audio. Verifique la conexión.');
+      this.notificacionService.mostrar('No se pudo cargar el audio. Verifique la conexión.', 'error');
     };
   }
 

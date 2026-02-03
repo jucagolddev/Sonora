@@ -1,0 +1,12 @@
+<div class="notificacion-container">
+    <div *ngFor="let notificacion of notificaciones$ | async" class="notificacion-item" [ngClass]="notificacion.tipo"
+        (click)="cerrar(notificacion.id)">
+        <div class="icono">
+            <span *ngIf="notificacion.tipo === 'success'">✓</span>
+            <span *ngIf="notificacion.tipo === 'error'">✕</span>
+            <span *ngIf="notificacion.tipo === 'warning'">!</span>
+            <span *ngIf="notificacion.tipo === 'info'">i</span>
+        </div>
+        <div class="mensaje">{{ notificacion.mensaje }}</div>
+    </div>
+</div>

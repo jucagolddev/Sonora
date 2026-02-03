@@ -10,6 +10,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificacionService } from '../../../core/services/notificacion.service';
 
 @Component({
   selector: 'app-register',
@@ -24,6 +25,7 @@ export class RegisterComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private notificacionService: NotificacionService
   ) {
     this.formularioRegistro = this.fb.group({
       nombre: ['', Validators.required],
@@ -66,8 +68,9 @@ export class RegisterComponent {
         next: (res) => {
           this.isLoading = false;
           console.log('Registro exitoso:', res);
-          alert(
+          this.notificacionService.mostrar(
             '¡Usuario registrado con éxito! Sesión iniciada automáticamente.',
+            'success'
           );
           this.router.navigate(['/']);
         },
@@ -78,7 +81,7 @@ export class RegisterComponent {
           const msg =
             err.error?.mensaje ||
             'No se pudo completar el registro. Verifica que el servidor (Backend) esté corriendo y que la base de datos esté accesible.';
-          alert(`Error: ${msg}`);
+          this.notificacionService.mostrar(`Error: ${msg}`, 'error');
         },
       });
     } else {

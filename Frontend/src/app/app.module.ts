@@ -17,14 +17,12 @@ import { UploadComponent } from './features/projects/upload/upload.component';
 import { SearchComponent } from './features/search/search.component';
 import { CategoryComponent } from './features/category/category.component';
 
-// Shared Components (Traditional)
-// Removidos para arreglar error de compilación (obsoletos)
-
 // Shared Components (Standalone)
 import { AlertMsgComponent } from './shared/components/alert-msg/alert-msg.component';
 import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { SoundCardComponent } from './shared/components/sound-card/sound-card.component';
 import { HeaderComponent } from './shared/components/header/header.component';
+import { NotificacionComponent } from './shared/components/notificacion/notificacion.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +33,7 @@ import { HeaderComponent } from './shared/components/header/header.component';
     UploadComponent,
     SearchComponent,
     CategoryComponent,
+    NotificacionComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,4 +55,4 @@ import { HeaderComponent } from './shared/components/header/header.component';
   ],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

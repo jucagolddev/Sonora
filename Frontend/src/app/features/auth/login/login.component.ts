@@ -10,6 +10,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { NotificacionService } from '../../../core/services/notificacion.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notificacionService: NotificacionService
   ) {
     /**
      * Inicialización de validaciones dinámicas:
@@ -46,19 +48,19 @@ export class LoginComponent {
         .subscribe({
           next: (response) => {
             if (response && response.token) {
-              alert('¡Bienvenido de nuevo!');
-              this.router.navigate(['/']); 
+              this.notificacionService.mostrar('¡Bienvenido de nuevo!', 'success');
+              this.router.navigate(['/']);
             }
           },
           error: (err) => {
             console.error('Error en login:', err);
             const msg = err.error?.mensaje || 'Error al iniciar sesión. Revisa tus credenciales.';
-            alert(msg);
+            this.notificacionService.mostrar(msg, 'error');
           }
         });
 
     } else {
-      alert('Por favor, completa el formulario correctamente.');
+      this.notificacionService.mostrar('Por favor, completa el formulario correctamente.', 'warning');
     }
   }
 }

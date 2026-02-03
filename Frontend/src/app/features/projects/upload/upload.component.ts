@@ -11,6 +11,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpEventType } from '@angular/common/http';
 import { SoundService } from '../../../core/services/sound.service'; // Importar servicio
+import { NotificacionService } from '../../../core/services/notificacion.service';
 
 @Component({
   selector: 'app-upload',
@@ -33,6 +34,7 @@ export class UploadComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private soundService: SoundService, // Inyectar SoundService
+    private notificacionService: NotificacionService
   ) {
     this.formularioSubida = this.fb.group({
       titulo: ['', Validators.required],
@@ -64,8 +66,9 @@ export class UploadComponent implements OnInit {
       );
 
       if (!isTypeValid && !isExtensionValid) {
-        alert(
+        this.notificacionService.mostrar(
           'Solo se permiten archivos de audio/video válidos (MP3, MP4, WAV, OGG).',
+          'warning'
         );
         return;
       }
@@ -100,7 +103,7 @@ export class UploadComponent implements OnInit {
           return;
         }
       } else {
-        alert('Inicie sesión para subir contenido.');
+        this.notificacionService.mostrar('Inicie sesión para subir contenido.', 'warning');
         this.subiendo = false;
         return;
       }
@@ -115,18 +118,18 @@ export class UploadComponent implements OnInit {
             if (event.type === HttpEventType.UploadProgress && event.total) {
               this.porcentaje = Math.round((100 * event.loaded) / event.total);
             } else if (event.type === HttpEventType.Response) {
-              alert('¡Archivo subido correctamente!');
+              this.notificacionService.mostrar('¡Archivo subido correctamente!', 'success');
               this.limpiarFormulario();
             }
           },
           error: (err) => {
             console.error('Error durante la subida:', err);
-            alert('Error crítico al subir el archivo.');
+            this.notificacionService.mostrar('Error crítico al subir el archivo.', 'error');
             this.subiendo = false;
           },
         });
     } else {
-      alert('Por favor, completa el formulario y selecciona un archivo.');
+      this.notificacionService.mostrar('Por favor, completa el formulario y selecciona un archivo.', 'warning');
     }
   }
 
