@@ -1,103 +1,98 @@
+@use "../../../../styles/variables" as *;
+
 .notificacion-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    pointer-events: none; // Para que no bloquee clicks debajo si no hay notificaciones
+  position: fixed;
+  top: 90px; // Debajo del header
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  pointer-events: none;
 }
 
 .notificacion-item {
-    pointer-events: auto;
-    min-width: 300px;
-    max-width: 400px;
-    padding: 16px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  pointer-events: auto;
+  min-width: 320px;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+
+  // Glassmorphism oscuro
+  background: rgba(18, 16, 22, 0.95); // Fondo casi negro ($color-bg)
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  // Borde naranja solicitado
+  border: 1px solid $color-acento;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+
+  display: flex;
+  align-items: center;
+  gap: 15px;
+
+  font-family: $font-main;
+  font-size: 0.95rem;
+  color: $color-texto;
+
+  cursor: pointer;
+
+  // Animación desde la derecha
+  animation:
+    slideInRight 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    fadeOut 0.3s ease-in 4.7s forwards;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateX(-5px);
+    box-shadow: 0 6px 20px rgba(255, 107, 0, 0.2); // Brillo naranja suave
+    animation-play-state: paused;
+  }
+
+  .icono {
     display: flex;
     align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55), fadeOut 0.3s ease-in 2.7s forwards;
-    transition: transform 0.2s, opacity 0.2s;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
 
-    // Tipografía
-    font-family: 'Inter', sans-serif; // Asumiendo que se usa una fuente moderna
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-
-    &:hover {
-        transform: scale(1.02);
-        animation-play-state: paused; // Pausar desaparición al hacer hover
-    }
-
-    .icono {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        font-weight: bold;
-        color: white;
-        font-size: 12px;
-    }
-
-    // Variantes
-    &.success {
-        border-left: 4px solid #10B981;
-
-        .icono {
-            background: #10B981;
-        }
-    }
-
-    &.error {
-        border-left: 4px solid #EF4444;
-
-        .icono {
-            background: #EF4444;
-        }
-    }
-
-    &.warning {
-        border-left: 4px solid #F59E0B;
-
-        .icono {
-            background: #F59E0B;
-        }
-    }
-
-    &.info {
-        border-left: 4px solid #3B82F6;
-
-        .icono {
-            background: #3B82F6;
-        }
-    }
+  // Variantes para el COLOR DEL ÍCONO solamente (el borde ya es naranja)
+  &.success .icono {
+    color: $color-exito;
+    border: 1px solid $color-exito;
+  }
+  &.error .icono {
+    color: $color-error;
+    border: 1px solid $color-error;
+  }
+  &.warning .icono {
+    color: $color-alerta;
+    border: 1px solid $color-alerta;
+  }
+  &.info .icono {
+    color: $color-info;
+    border: 1px solid $color-info;
+  }
 }
 
-@keyframes slideIn {
-    from {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+@keyframes slideInRight {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes fadeOut {
-    to {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
 }

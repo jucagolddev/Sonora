@@ -80,22 +80,45 @@ const upload = multer({
 export const subirArchivo = (req: Request, res: Response) => {
   upload(req, res, async (err: any) => {
     // Manejo de errores de Multer
-    if (err)
+    if (err) {
+      console.error("[Upload] Error Multer:", err);
       return res
         .status(500)
-        .json({ mensaje: "Error al subir archivo físico al servidor." });
+        .json({
+          mensaje: "Error al subir archivo físico al servidor.",
+          detalle: err.message,
+        });
+    }
 
     const reqFiles = req as MulterRequest;
     if (!reqFiles.file) {
+      console.warn("[Upload] No file received");
       return res
         .status(400)
         .json({ mensaje: "No se ha proporcionado ningún archivo." });
     }
 
+    console.log("[Upload] Body recibido:", req.body);
+    console.log("[Upload] Archivo recibido:", reqFiles.file);
+
     // Datos recibidos desde el formulario de Angular
     const { titulo, autor, id_usuario_fk } = req.body;
     const { filename } = reqFiles.file;
     const url_audio = `/archivos/${filename}`; // Ruta relativa para acceso público
+
+    // Validación básica de campos requeridos
+    if (!titulo || !autor || !id_usuario_fk) {
+      console.error("[Upload] Missing fields:", {
+        titulo,
+        autor,
+        id_usuario_fk,
+      });
+      return res
+        .status(400)
+        .json({
+          mensaje: "Faltan campos requeridos (titulo, autor, id_usuario_fk).",
+        });
+    }
 
     try {
       // TRANSACCIÓN LÓGICA: AUTOR -> CANCIÓN
@@ -108,22 +131,22 @@ export const subirArchivo = (req: Request, res: Response) => {
 
       let id_autor_final;
 
-      if (autorDb.length > 0) {
+      if (autorDb && autorDb.length > 0) {
         // Autor existente
         id_autor_final = autorDb[0].id_autor;
+        console.log("[Upload] Autor encontrado ID:", id_autor_final);
       } else {
         // 2. Creación de nuevo autor
-        // Si no existe, se inserta en la tabla 'autor'
+        console.log("[Upload] Creando nuevo autor:", autor);
         const [nuevoAutor]: any = await db.query(
           "INSERT INTO autor (nombre_artistico, id_usuario_fk) VALUES (?, ?)",
           [autor, id_usuario_fk],
         );
         id_autor_final = nuevoAutor.insertId;
+        console.log("[Upload] Nuevo autor creado ID:", id_autor_final);
       }
 
       // 3. Inserción de registro de canción
-      // Se asocia con el autor y una licencia por defecto (id_licencia_fk = 1)
-      // Se incluye la categoría recibida (opcional)
       const categoriaFinal = req.body.categoria || null;
 
       const sqlCancion = `
@@ -132,6 +155,8 @@ export const subirArchivo = (req: Request, res: Response) => {
                 VALUES (?, ?, ?, NOW(), 0, 0, 1, ?)
             `;
 
+      console.log("[Upload] Insertando canción para autor FK:", id_autor_final);
+
       await db.query(sqlCancion, [
         titulo,
         id_autor_final,
@@ -139,6 +164,7 @@ export const subirArchivo = (req: Request, res: Response) => {
         categoriaFinal,
       ]);
 
+      console.log("[Upload] Canción registrada exitosamente");
       res.status(200).json({
         mensaje: "Archivo subido y metadatos registrados correctamente.",
       });
@@ -147,6 +173,7 @@ export const subirArchivo = (req: Request, res: Response) => {
       res.status(500).json({
         mensaje: "Error al guardar información en la base de datos.",
         detalle: error.message,
+        sqlError: error.sqlMessage, // Enviar detalle si es posible (en dev)
       });
     }
   });

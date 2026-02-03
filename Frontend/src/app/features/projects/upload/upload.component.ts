@@ -34,7 +34,7 @@ export class UploadComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private soundService: SoundService, // Inyectar SoundService
-    private notificacionService: NotificacionService
+    private notificacionService: NotificacionService,
   ) {
     this.formularioSubida = this.fb.group({
       titulo: ['', Validators.required],
@@ -42,7 +42,6 @@ export class UploadComponent implements OnInit {
       categoria: ['', Validators.required],
       descripcion: ['', Validators.required],
       nombreArchivo: ['', Validators.required], // Nuevo campo para el nombre del archivo
-      notas: [''],
     });
   }
 
@@ -69,7 +68,7 @@ export class UploadComponent implements OnInit {
       if (!isTypeValid && !isExtensionValid) {
         this.notificacionService.mostrar(
           'Solo se permiten archivos de audio/video válidos (MP3, MP4, WAV, OGG).',
-          'warning'
+          'warning',
         );
         return;
       }
@@ -105,7 +104,10 @@ export class UploadComponent implements OnInit {
           return;
         }
       } else {
-        this.notificacionService.mostrar('Inicie sesión para subir contenido.', 'warning');
+        this.notificacionService.mostrar(
+          'Inicie sesión para subir contenido.',
+          'warning',
+        );
         this.subiendo = false;
         return;
       }
@@ -120,18 +122,36 @@ export class UploadComponent implements OnInit {
             if (event.type === HttpEventType.UploadProgress && event.total) {
               this.porcentaje = Math.round((100 * event.loaded) / event.total);
             } else if (event.type === HttpEventType.Response) {
-              this.notificacionService.mostrar('¡Archivo subido correctamente!', 'success');
+              this.notificacionService.mostrar(
+                '¡Archivo subido correctamente!',
+                'success',
+              );
               this.limpiarFormulario();
             }
           },
           error: (err) => {
             console.error('Error durante la subida:', err);
-            this.notificacionService.mostrar('Error crítico al subir el archivo.', 'error');
+            // Mostrar mensaje detallado si existe
+            const mensajeError =
+              err.error?.detalle ||
+              err.error?.mensaje ||
+              'Error crítico al subir el archivo.';
+            const sqlError = err.error?.sqlError
+              ? ` (${err.error.sqlError})`
+              : '';
+
+            this.notificacionService.mostrar(
+              `${mensajeError}${sqlError}`,
+              'error',
+            );
             this.subiendo = false;
           },
         });
     } else {
-      this.notificacionService.mostrar('Por favor, completa el formulario y selecciona un archivo.', 'warning');
+      this.notificacionService.mostrar(
+        'Por favor, completa el formulario y selecciona un archivo.',
+        'warning',
+      );
     }
   }
 

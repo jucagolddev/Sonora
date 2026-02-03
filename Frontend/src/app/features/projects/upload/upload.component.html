@@ -45,15 +45,10 @@
                         class="control-formulario">
                 </div>
 
-                <div class="grupo-formulario">
-                    <input type="text" formControlName="notas" placeholder="Notas adicionales"
-                        class="control-formulario">
-                </div>
-
-
                 <div class="acciones-subida">
                     <!-- Deshabilito el botón si no hay archivo o el formulario es inválido -->
-                    <button type="submit" class="boton-confirmar"
+                    <!-- Botón con clase 'boton-primario' para estilo consistente -->
+                    <button type="submit" class="boton-confirmar boton-primario"
                         [disabled]="formularioSubida.invalid || !archivoSeleccionado">
                         confirmar
                     </button>
