@@ -1,9 +1,10 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
- * Módulo: Componente de Registro
- * Descripción: Gestiona el alta de nuevos usuarios en el sistema.
- *              Valida formularios y datos antes de enviarlos al backend.
+ * Módulo: Componente de Registro de Usuarios
+ * Descripción: En este componente gestionamos el alta de nuevos miembros en
+ *              nuestra comunidad. Nos encargamos de validar la información
+ *              proporcionada y de enviarla a nuestro servidor de forma segura.
  */
 
 import { Component } from '@angular/core';
@@ -17,9 +18,9 @@ import { NotificacionService } from '../../../core/services/notificacion.service
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {
-  // Formulario reactivo para capturar múltiples datos del usuario
+  // Estructura de nuestro formulario de inscripción
   formularioRegistro: FormGroup;
-  isLoading: boolean = false;
+  isLoading: boolean = false; // Controlamos el estado de carga para dar feedback visual
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +28,12 @@ export class RegisterComponent {
     private router: Router,
     private notificacionService: NotificacionService
   ) {
+    /**
+     * Definición de Campos de Registro
+     * -------------------------------------------------------------------
+     * Nosotros requerimos nombre, apellidos, correo, contraseña y país 
+     * para completar el perfil del usuario en Sonora.
+     */
     this.formularioRegistro = this.fb.group({
       nombre: ['', Validators.required],
       apellidos: ['', Validators.required],
@@ -38,24 +45,30 @@ export class RegisterComponent {
   }
 
   /**
-   * Lógica de procesamiento de registro.
+   * Proceso de Alta de Usuario
+   * ------------------------------------------------------------------
+   * Al enviar el formulario, realizamos validaciones de seguridad locales 
+   * antes de contactar con nuestra API.
    */
   onSubmit() {
     if (this.formularioRegistro.valid) {
-      this.isLoading = true; // Block C: Feedback interactivo
+      this.isLoading = true; // Iniciamos la animación de espera
+      
       const pass = this.formularioRegistro.get('password')?.value;
       const confirm = this.formularioRegistro.get('confirmPassword')?.value;
 
-      // Validación extra en cliente: coincidencia de contraseñas
+      // Validación interna: Nos aseguramos de que las contraseñas coincidan
       if (pass !== confirm) {
-        alert('Las contraseñas no coinciden.');
+        this.notificacionService.mostrar('Las contraseñas que has introducido no coinciden.', 'warning');
         this.isLoading = false;
         return;
       }
 
       /**
-       * TRANSFORMACIÓN DE DATOS
-       * El backend espera 'nombre_usuario'. Combinamos nombre y apellidos.
+       * ADAPTACIÓN DE DATOS (Mapping)
+       * --------------------------------------------------------------
+       * Nuestro backend espera el campo 'nombre_usuario'. Nosotros hemos
+       * decidido combinar el nombre y los apellidos para generar este campo.
        */
       const datosParaBackend = {
         nombre_usuario: `${this.formularioRegistro.value.nombre} ${this.formularioRegistro.value.apellidos}`,
@@ -63,31 +76,30 @@ export class RegisterComponent {
         password: this.formularioRegistro.value.password,
       };
 
-      // Comunicación con el servicio
+      // Solicitamos a nuestro servicio de autenticación que tramite el registro
       this.authService.register(datosParaBackend).subscribe({
         next: (res) => {
           this.isLoading = false;
-          console.log('Registro exitoso:', res);
           this.notificacionService.mostrar(
-            '¡Usuario registrado con éxito! Sesión iniciada automáticamente.',
+            '¡Bienvenido a Sonora! Tu cuenta ha sido creada y ya puedes disfrutar del catálogo.',
             'success'
           );
-          this.router.navigate(['/']);
+          this.router.navigate(['/']); // Redirigimos al inicio de la plataforma
         },
         error: (err) => {
           this.isLoading = false;
-          console.error('Error detallado en registro:', err);
-          // Intentamos mostrar el mensaje específico del backend si existe
-          const msg =
-            err.error?.mensaje ||
-            'No se pudo completar el registro. Verifica que el servidor (Backend) esté corriendo y que la base de datos esté accesible.';
+          console.error('Error durante el proceso de registro de nuestro equipo:', err);
+          
+          // Capturamos el mensaje de error específico que nos devuelva el servidor
+          const msg = err.error?.mensaje || 'No hemos podido completar tu registro. Por favor, revisa tu conexión.';
           this.notificacionService.mostrar(`Error: ${msg}`, 'error');
         },
       });
     } else {
-      // Block C: Feedback error visual (podría añadirse wiggle animation aquí)
-      alert('Por favor, completa todos los campos requeridos correctamente.');
+      // Si el formulario está incompleto, avisamos al usuario y marcamos los errores
+      this.notificacionService.mostrar('Por favor, rellena todos los campos correctamente.', 'warning');
       this.formularioRegistro.markAllAsTouched();
     }
   }
 }
+

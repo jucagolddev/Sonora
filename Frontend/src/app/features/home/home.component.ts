@@ -1,9 +1,11 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
- * Módulo: Componente Principal (Home)
- * Descripción: Página de inicio que muestra el catálogo musical.
- *              Incluye carruseles por categoría y reproductor de audio integrado.
+ * Módulo: Componente Principal de Inicio (Home)
+ * Descripción: En nuestra página de inicio, presentamos a los usuarios el 
+ *              catálogo musical completo. Hemos diseñado esta sección para 
+ *              que se carguen dinámicamente tanto las categorías como los 
+ *              sonidos destacados, ofreciendo una experiencia interactiva.
  */
 
 import {
@@ -12,6 +14,7 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
+  AfterViewInit,
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { SoundService } from '../../core/services/sound.service';
@@ -21,18 +24,26 @@ import { Sound } from '../../core/models/sound.interface';
   selector: 'app-home',
   templateUrl: './home.component.html',
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  // HERO VIDEO (Block A)
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
+  /**
+   * Referencia al Video del Hero
+   * -------------------------------------------------------------------
+   * Hemos incluido un video decorativo en la cabecera. Utilizamos ViewChild 
+   * para poder manipular sus propiedades (como el silencio) desde nuestra lógica.
+   */
   @ViewChild('heroVideo') heroVideo!: ElementRef<HTMLVideoElement>;
 
-  // Estado de la búsqueda
-  terminoBusqueda: string = '';
+  // Variables de estado para la interactividad de nuestra página
+  terminoBusqueda: string = ''; // Captura lo que el usuario escribe en nuestro buscador
+  listaSonidos: Sound[] = [];   // Albergamos todos los sonidos recuperados del backend
+  categorias: string[] = [];    // Lista de géneros disponibles en Sonora
 
-  // Listas de sonidos para los carruseles (Requeridas por el template)
-  listaSonidos: Sound[] = [];
-  categorias: string[] = [];
-
-  // Agrupación dinámica de sonidos por categoría para carruseles
+  /**
+   * Carruseles Dinámicos
+   * ------------------------------------------------------------------
+   * Para hacer la página más atractiva, nosotros generamos grupos de sonidos 
+   * clasificados por sus categorías para mostrarlos en formato carrusel.
+   */
   carruselesDinamicos: { nombre: string; sonidos: Sound[] }[] = [];
 
   constructor(
@@ -41,43 +52,59 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   /**
-   * Inicialización: Carga datos y organiza carruseles.
+   * Inicialización del Componente
+   * ------------------------------------------------------------------
+   * Al cargar la página, nosotros disparamos la petición para traer los datos
+   * iniciales de nuestros servicios de audio.
    */
   ngOnInit(): void {
     this.cargarDatos();
   }
 
+  /**
+   * Gestión Post-Visualización
+   * ------------------------------------------------------------------
+   * Una vez que la vista se ha renderizado, nosotros nos aseguramos de que 
+   * el video de nuestra portada se reproduzca sin sonido, cumpliendo con 
+   * las directrices de experiencia de usuario.
+   */
   ngAfterViewInit(): void {
-      if (this.heroVideo && this.heroVideo.nativeElement) {
-          this.heroVideo.nativeElement.muted = true;
-          this.heroVideo.nativeElement.volume = 0;
-      }
+    if (this.heroVideo && this.heroVideo.nativeElement) {
+      this.heroVideo.nativeElement.muted = true;
+      this.heroVideo.nativeElement.volume = 0;
+    }
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    // Aquí nosotros limpiaríamos suscripciones si fuera necesario
+  }
 
   /**
-   * Obtiene todos los sonidos y los clasifica por categoría para rellenar los carruseles.
+   * Carga y Organización de Datos
+   * ------------------------------------------------------------------
+   * En esta función nos encargamos de:
+   * 1. Solicitar las categorías a nuestra API y barajarlas para dar variedad.
+   * 2. Recoger todos los sonidos y agruparlos para alimentar los carruseles.
    */
   private cargarDatos() {
-    // Cargar Categorías
+    // Cargamos las categorías de nuestra base de datos
     this.soundService.getCategories().subscribe({
       next: (cats) => {
-        // Barajar aleatoriamente y seleccionar entre 10 y 15
-        const numRandom = Math.floor(Math.random() * 6) + 10; // Entre 10 y 15
+        // Seleccionamos un número aleatorio de ellas para nuestra rejilla de filtros
+        const numRandom = Math.floor(Math.random() * 6) + 10;
         this.categorias = cats
           .sort(() => Math.random() - 0.5)
           .slice(0, numRandom);
       },
-      error: (err) => console.error('Error al cargar la categoría:', err),
+      error: (err) => console.error('Hemos tenido un error al cargar las categorías:', err),
     });
 
-    // Cargar Sonidos
+    // Recuperamos la colección completa de sonidos de Sonora
     this.soundService.getAllSounds().subscribe({
       next: (sonidos) => {
         this.listaSonidos = sonidos;
 
-        // Organizar carruseles dinámicamente
+        // Organizamos nuestros carruseles de forma dinámica agrupando por categoría
         const grupos: { [key: string]: Sound[] } = {};
 
         sonidos.forEach((s) => {
@@ -87,15 +114,13 @@ export class HomeComponent implements OnInit, OnDestroy {
           grupos[s.categoria].push(s);
         });
 
-        // Obtener nombres de categorías que tienen sonidos
+        // Barajamos las categorías disponibles para mostrar diferentes grupos cada vez
         const nombresCategorias = Object.keys(grupos);
-
-        // Barajar aleatoriamente las categorías
         const categoriasBarajadas = nombresCategorias.sort(
           () => Math.random() - 0.5,
         );
 
-        // Seleccionar hasta 3 aleatorias
+        // Seleccionamos hasta 3 grupos para mostrar en la página principal
         this.carruselesDinamicos = categoriasBarajadas
           .slice(0, 3)
           .map((cat) => ({
@@ -103,22 +128,32 @@ export class HomeComponent implements OnInit, OnDestroy {
             sonidos: grupos[cat],
           }));
       },
-      error: (err) => console.error('Error al cargar datos en Home:', err),
+      error: (err) => console.error('Error al recuperar los sonidos de nuestro catálogo:', err),
     });
   }
 
   // -----------------------------------------------------------------
-  // NAVEGACIÓN Y CARRUSEL
+  // MÉTODOS DE NAVEGACIÓN
   // -----------------------------------------------------------------
 
+  /**
+   * Gestión de Búsqueda
+   * Redirigimos al usuario a la vista de resultados cuando utiliza nuestra barra de búsqueda.
+   */
   buscarSonidos() {
     if (this.terminoBusqueda.trim()) {
       this.router.navigate(['/buscar', this.terminoBusqueda]);
     }
   }
 
+  /**
+   * Control de Carrusel
+   * Hemos programado esta función para que los botones laterales desplacen 
+   * el contenedor de sonidos de forma horizontal y suave.
+   */
   moverCarrusel(direccion: string, contenedor: HTMLElement) {
     const scrollAmount = direccion === 'izquierda' ? -400 : 400;
     contenedor.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   }
 }
+

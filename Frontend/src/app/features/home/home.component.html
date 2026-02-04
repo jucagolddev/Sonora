@@ -1,81 +1,92 @@
+<!-- 
+    PROYECTO SONORA - VISTA PRINCIPAL (HOME)
+    -------------------------------------------------------------------
+    Esta es nuestra página de aterrizaje. Como desarrolladores, hemos 
+    estructurado este archivo para guiar al usuario desde una búsqueda 
+    rápida en el Hero hasta la exploración por categorías y carruseles.
+-->
+
 <main class="pagina-inicio">
-    <!-- HERO MULTIMEDIA SECTION (Block A) -->
+
+    <!-- SECCIÓN HERO: Nuestra carta de presentación -->
     <header class="hero-section">
-        <video #heroVideo class="hero-video" autoplay loop muted [muted]="true" playsinline aria-hidden="true" tabindex="-1"
-            fetchpriority="high" poster="assets/video_poster.png">
+        <!-- Video decorativo que refuerza la identidad visual de Sonora -->
+        <video #heroVideo class="hero-video" autoplay loop muted [muted]="true" playsinline aria-hidden="true"
+            tabindex="-1" fetchpriority="high" poster="assets/video_poster.png">
             <source src="assets/videos/ondasHSonora.mp4" type="video/mp4">
         </video>
 
         <div class="hero-overlay">
-            <!-- Contenedor principal del buscador con el título de bienvenida -->
+            <!-- Bloque de búsqueda central: La funcionalidad más importante de nuestra home -->
             <div class="contenedor-busqueda-principal">
                 <div class="barra-busqueda">
-                    <!-- SVG Lupa (Block B) -->
+                    <!-- Icono de lupa interactivo para disparar la búsqueda -->
                     <svg class="icono-svg icono-lupa" (click)="buscarSonidos()" viewBox="0 0 24 24"
                         aria-label="Buscar sonidos" role="button" tabindex="0">
                         <path
                             d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                     </svg>
-                    <label for="search-input" class="visually-hidden">Buscar sonidos</label>
-                    <input type="text" id="search-input" class="input-busqueda" placeholder="Buscar..."
+                    <label for="search-input" class="visually-hidden">Busca lo que necesites</label>
+                    <input type="text" id="search-input" class="input-busqueda" placeholder="Busca efectos, música..."
                         [(ngModel)]="terminoBusqueda" (keyup.enter)="buscarSonidos()">
                 </div>
-                <div>
-                    ENCUENTRE TODO TIPO DE SONIDOS
+                <div class="hero-tagline">
+                    ENCUENTRA TODO TIPO DE SONIDOS PARA TUS PROYECTOS
                 </div>
             </div>
-
         </div>
     </header>
 
-    <!-- Sección narrativa donde explico qué es el proyecto -->
+    <!-- SECCIÓN INFORMATIVA: Nosotros explicamos el propósito de Sonora -->
     <section class="seccion-info">
         <article class="caja-info">
-            <h2>Que es sonora</h2>
-            <p>Sonora es un espacio web donde puedes encontrar gran variedad de sonidos de libre uso (Sin copyright).
-            </p>
-            <p>Una web desarrollada por 3 estudiantes de Desarrollo de aplicaciones web</p>
-            <p>Actualmente contamos con una variedad limitada de sonidos pero con tu ayuda podemos desarrollar una gran
-                web de plugins.</p>
+            <h2>¿Qué es Sonora?</h2>
+            <p>Sonora es nuestro proyecto universitario, un espacio web diseñado para encontrar gran variedad de sonidos
+                de libre uso y sin copyright.</p>
+            <p>Somos un grupo de 3 estudiantes entusiastas del Desarrollo de Aplicaciones Web.</p>
+            <p>Nuestra misión es crear una biblioteca útil para creadores de contenido, permitiendo que la comunidad
+                crezca compartiendo sus propios audios.</p>
         </article>
     </section>
 
-    <!-- Filtros por categoría para facilitar la navegación -->
+    <!-- EXPLORACIÓN POR CATEGORÍAS: Filtros rápidos que nosotros ofrecemos -->
     <section class="seccion-categorias">
-        <h2 class="titulo-seccion">categorías</h2>
+        <h2 class="titulo-seccion">Categorías</h2>
         <div class="grid-categorias">
-            <button *ngFor="let cat of categorias" class="boton-categoria" [routerLink]="['/categoria', cat]">{{ cat
-                }}</button>
+            <!-- Generamos dinámicamente los botones de acceso según las categorías de nuestra BD -->
+            <button *ngFor="let cat of categorias" class="boton-categoria" [routerLink]="['/categoria', cat]">
+                {{ cat }}
+            </button>
         </div>
     </section>
 
-    <!-- Sección de Carruseles: Aquí muestro los sonidos destacados y por categorías -->
+    <!-- SECCIÓN DE CONTENIDO: Aquí mostramos nuestra selección de sonidos -->
     <section class="seccion-tops">
-        <h2 class="titulo-principal-tops">Sonidos destacados</h2>
+        <h2 class="titulo-principal-tops">Descubre Sonidos</h2>
 
-        <!-- Carrusel 1: Sonidos Populares -->
+        <!-- CARRUSEL DESTACADO: Los sonidos más populares de nuestra plataforma -->
         <article class="grupo-carrusel">
-            <span class="titulo-pill">sonidos populares</span>
+            <span class="titulo-pill">Sonidos Populares</span>
             <div class="contenedor-carrusel">
                 <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselPopulares)"
-                    aria-label="Mover carrusel a la izquierda">
+                    aria-label="Anterior">
                     <svg class="icono-svg" viewBox="0 0 24 24">
                         <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
                     </svg>
                 </button>
                 <div class="ventana-carrusel" #carruselPopulares>
                     <div class="pista-carrusel">
+                        <!-- Instanciamos nuestro componente de tarjeta para cada sonido -->
                         <app-sound-card *ngFor="let sonido of listaSonidos" [sonido]="sonido"></app-sound-card>
 
-                        <!-- Cargando... -->
-                        <div class="tarjeta-sonido" *ngIf="listaSonidos.length === 0"
-                            style="justify-content: center; align-items: center; min-height: 200px;">
-                            <p>Cargando sonidos...</p>
+                        <!-- Mensaje de espera mientras nosotros recuperamos los datos -->
+                        <div class="tarjeta-sonido cargando" *ngIf="listaSonidos.length === 0">
+                            <p>Estamos recuperando los mejores sonidos para ti...</p>
                         </div>
                     </div>
                 </div>
                 <button class="flecha-carrusel derecha" (click)="moverCarrusel('derecha', carruselPopulares)"
-                    aria-label="Mover carrusel a la derecha">
+                    aria-label="Siguiente">
                     <svg class="icono-svg" viewBox="0 0 24 24">
                         <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
                     </svg>
@@ -83,9 +94,9 @@
             </div>
         </article>
 
-        <!-- Carruseles Dinámicos: Muestran las categorías con más sonidos -->
+        <!-- CARRUSELES POR CATEGORÍA: Bloques dinámicos que nosotros organizamos -->
         <article class="grupo-carrusel" *ngFor="let carrusel of carruselesDinamicos">
-            <span class="titulo-pill">sonidos de {{ carrusel.nombre }}</span>
+            <span class="titulo-pill">Audios de: {{ carrusel.nombre }}</span>
             <div class="contenedor-carrusel">
                 <button class="flecha-carrusel izquierda" (click)="moverCarrusel('izquierda', carruselRef)"
                     aria-label="Anterior">

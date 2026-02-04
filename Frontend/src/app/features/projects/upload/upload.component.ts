@@ -1,16 +1,17 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
- * Módulo: Componente de Subida de Archivos
- * Descripción: Permite la carga de audio/video al servidor.
- *              Implementa validación de tipos, barra de progreso y
- *              vinculación de metadatos (título, autor, categoría).
+ * Módulo: Componente de Subida de Archivos (Upload)
+ * Descripción: En este componente hemos desarrollado la funcionalidad para que 
+ *              nuestros usuarios puedan compartir sus creaciones. Gestionamos
+ *              la selección del archivo, validamos su formato y mostramos el
+ *              progreso de la subida en tiempo real.
  */
 
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient, HttpEventType } from '@angular/common/http';
-import { SoundService } from '../../../core/services/sound.service'; // Importar servicio
+import { SoundService } from '../../../core/services/sound.service';
 import { NotificacionService } from '../../../core/services/notificacion.service';
 
 @Component({
@@ -18,46 +19,65 @@ import { NotificacionService } from '../../../core/services/notificacion.service
   templateUrl: './upload.component.html',
 })
 export class UploadComponent implements OnInit {
+  // Formulario reactivo para capturar metadatos del audio
   formularioSubida: FormGroup;
+  
+  // Gestión del archivo físico seleccionado por el usuario
   archivoSeleccionado: File | null = null;
-  // Nombre del archivo mostrado en la UI (Matriz con template)
   nombreArchivo: string = '';
 
-  // Estados de la subida
+  // Estados interactivos para informar al usuario de la subida
   porcentaje: number = 0;
   subiendo: boolean = false;
 
-  // Categorías disponibles
+  // Lista de categorías que nosotros cargamos desde la base de datos
   categorias: string[] = [];
 
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private soundService: SoundService, // Inyectar SoundService
+    private soundService: SoundService,
     private notificacionService: NotificacionService,
   ) {
+    /**
+     * Definición de Campos Requeridos
+     * -------------------------------------------------------------------
+     * Nosotros pedimos título, autor, categoría y una breve descripción
+     * para que el catálogo de Sonora sea fácil de navegar.
+     */
     this.formularioSubida = this.fb.group({
       titulo: ['', Validators.required],
       autor: ['', Validators.required],
       categoria: ['', Validators.required],
       descripcion: ['', Validators.required],
-      nombreArchivo: ['', Validators.required], // Nuevo campo para el nombre del archivo
+      nombreArchivo: ['', Validators.required],
     });
   }
 
+  /**
+   * Carga Inicial
+   * ------------------------------------------------------------------
+   * Al entrar en la vista de subida, nosotros traemos las categorías 
+   * disponibles para que el usuario pueda clasificar su audio correctly.
+   */
   ngOnInit(): void {
-    // Cargar categorías disponibles desde el backend
     this.soundService.getCategories().subscribe({
       next: (cats) => (this.categorias = cats),
-      error: (err) =>
-        console.error('Error cargando categorías en upload:', err),
+      error: (err) => console.error('Error al recuperar categorías en la subida:', err),
     });
   }
 
+  /**
+   * Selección de Archivo
+   * ------------------------------------------------------------------
+   * Validamos que el archivo sea de un tipo de audio o video permitido
+   * antes de aceptarlo para la subida.
+   */
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
-      const validTypes = ['audio/mpeg', 'video/mp4', 'audio/wav', 'audio/ogg'];
+      // Definimos los tipos MIME y extensiones que nosotros autorizamos
+      const validTypes = ['audio/mpeg', 'video/mp4', 'audio/wav', 'audio/ogg', 'audio/mp3'];
       const validExtensions = ['.mp3', '.mp4', '.wav', '.ogg'];
 
       const isTypeValid = validTypes.includes(file.type);
@@ -67,17 +87,25 @@ export class UploadComponent implements OnInit {
 
       if (!isTypeValid && !isExtensionValid) {
         this.notificacionService.mostrar(
-          'Solo se permiten archivos de audio/video válidos (MP3, MP4, WAV, OGG).',
+          'Lo sentimos, solo permitimos archivos MP3, MP4, WAV u OGG.',
           'warning',
         );
         return;
       }
+
+      // Si es válido, lo guardamos y actualizamos la interfaz
       this.archivoSeleccionado = file;
       this.nombreArchivo = file.name;
       this.formularioSubida.patchValue({ nombreArchivo: file.name });
     }
   }
 
+  /**
+   * Tramitación de la Subida
+   * ------------------------------------------------------------------
+   * Este método coordina el envío del archivo y sus datos a nuestra API.
+   * Utilizamos FormData para empaquetar el archivo binario y los textos.
+   */
   onSubmit() {
     if (this.formularioSubida.valid && this.archivoSeleccionado) {
       this.subiendo = true;
@@ -87,31 +115,31 @@ export class UploadComponent implements OnInit {
       formData.append('archivo', this.archivoSeleccionado);
       formData.append('titulo', this.formularioSubida.get('titulo')?.value);
       formData.append('autor', this.formularioSubida.get('autor')?.value);
-      formData.append(
-        'categoria',
-        this.formularioSubida.get('categoria')?.value,
-      );
+      formData.append('categoria', this.formularioSubida.get('categoria')?.value);
 
+      // Recuperamos el ID del usuario de nuestra sesión local
       const currentUser = localStorage.getItem('sonora_current_user');
 
       if (currentUser) {
         try {
           const userObj = JSON.parse(currentUser);
-          const idUsuario = userObj.id_usuario;
-          formData.append('id_usuario_fk', idUsuario.toString());
+          formData.append('id_usuario_fk', userObj.id_usuario.toString());
         } catch (e) {
-          console.error('Error al procesar sesión:', e);
+          console.error('Error al interpretar los datos del usuario:', e);
           return;
         }
       } else {
-        this.notificacionService.mostrar(
-          'Inicie sesión para subir contenido.',
-          'warning',
-        );
+        this.notificacionService.mostrar('Para subir contenido a Sonora, primero debes iniciar sesión.', 'warning');
         this.subiendo = false;
         return;
       }
 
+      /**
+       * Petición HTTP con Seguimiento
+       * --------------------------------------------------------------
+       * Nosotros configuramos la petición para observar los eventos y poder
+       * calcular el porcentaje de subida para nuestra barra de progreso.
+       */
       this.http
         .post('http://localhost:3000/api/archivos/subir', formData, {
           reportProgress: true,
@@ -120,41 +148,30 @@ export class UploadComponent implements OnInit {
         .subscribe({
           next: (event) => {
             if (event.type === HttpEventType.UploadProgress && event.total) {
+              // Calculamos el avance de la subida
               this.porcentaje = Math.round((100 * event.loaded) / event.total);
             } else if (event.type === HttpEventType.Response) {
-              this.notificacionService.mostrar(
-                '¡Archivo subido correctamente!',
-                'success',
-              );
+              // Finalización exitosa
+              this.notificacionService.mostrar('¡Magnífico! Tu archivo se ha compartido correctamente en Sonora.', 'success');
               this.limpiarFormulario();
             }
           },
           error: (err) => {
-            console.error('Error durante la subida:', err);
-            // Mostrar mensaje detallado si existe
-            const mensajeError =
-              err.error?.detalle ||
-              err.error?.mensaje ||
-              'Error crítico al subir el archivo.';
-            const sqlError = err.error?.sqlError
-              ? ` (${err.error.sqlError})`
-              : '';
-
-            this.notificacionService.mostrar(
-              `${mensajeError}${sqlError}`,
-              'error',
-            );
+            console.error('Error durante el proceso de envío:', err);
+            const mensajeError = err.error?.detalle || err.error?.mensaje || 'Ha ocurrido un problema al subir tu archivo.';
+            this.notificacionService.mostrar(mensajeError, 'error');
             this.subiendo = false;
           },
         });
     } else {
-      this.notificacionService.mostrar(
-        'Por favor, completa el formulario y selecciona un archivo.',
-        'warning',
-      );
+      this.notificacionService.mostrar('Por favor, asegúrate de haber seleccionado un archivo y rellenado los campos.', 'warning');
     }
   }
 
+  /**
+   * Limpieza de Interfaz
+   * Restablecemos los valores del formulario para permitir una nueva subida.
+   */
   private limpiarFormulario() {
     this.subiendo = false;
     this.porcentaje = 0;
@@ -163,3 +180,4 @@ export class UploadComponent implements OnInit {
     this.archivoSeleccionado = null;
   }
 }
+

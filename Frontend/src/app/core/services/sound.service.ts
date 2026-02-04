@@ -1,9 +1,10 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
  * Módulo: Servicio de Sonidos (Frontend)
- * Descripción: Servicio encargado de la gestión de recursos de audio.
- *              Actualmente utiliza Mock Data, preparado para integración API.
+ * Descripción: Este servicio actúa como el puente entre nuestra base de datos
+ *              musical y la interfaz de usuario. Facilita la obtención de
+ *              las canciones y las categorías disponibles.
  */
 
 import { Injectable } from '@angular/core';
@@ -14,22 +15,24 @@ import { Observable, map } from 'rxjs';
 /**
  * SERVICIO DE SONIDOS (SoundService)
  * -------------------------------------------------------------------
- * Responsable de la obtención y filtrado de los recursos de audio.
+ * Hemos programado este servicio para gestionar la carga y el filtrado
+ * de nuestra biblioteca de audio de forma centralizada.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class SoundService {
+  // URLs de conexión a nuestra API del backend
   private apiUrl = 'http://localhost:3000/api/canciones';
   private backendBaseUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
 
   /**
-   * Obtiene todos los sonidos desde el API, con filtrado opcional por categoría.
-   *
-   * @param categoria Filtro opcional por categoría.
-   * @returns Observable con el array de sonidos.
+   * Colección Completa de Sonidos
+   * -----------------------------------------------------------------
+   * Realiza la petición a nuestro servidor para traer los audios.
+   * Hemos incluido la capacidad de filtrar por categoría desde la consulta.
    */
   getAllSounds(categoria?: string): Observable<Sound[]> {
     let url = this.apiUrl;
@@ -39,12 +42,17 @@ export class SoundService {
 
     return this.http.get<any>(url).pipe(
       map((response) => {
-        // Mapeamos la respuesta del backend al formato de nuestra interfaz
+        /**
+         * Transformación de Datos (Mapping)
+         * ------------------------------------------------------------
+         * Adaptamos la estructura que nos devuelve SQL al formato que 
+         * nosotros manejamos en nuestra interfaz de Angular.
+         */
         return response.audios.map((a: any) => ({
           id: a.id_cancion,
           titulo: a.titulo,
           autor: a.autor_nombre || 'Desconocido',
-          imgUrl: 'assets/img/pajaro.jpg', // Placeholder
+          imgUrl: 'assets/img/pajaro.jpg', // Imagen por defecto de nuestra app
           audioUrl: `${this.backendBaseUrl}${a.url_audio}`,
           categoria: a.categoria || 'Otros',
           duracion: a.duracion,
@@ -56,7 +64,10 @@ export class SoundService {
   }
 
   /**
-   * Obtener lista única de categorías desde el backend.
+   * Catálogo de Categorías
+   * -----------------------------------------------------------------
+   * Recupera los géneros musicales y tipos de efectos que nosotros 
+   * tenemos registrados en Sonora.
    */
   getCategories(): Observable<string[]> {
     return this.http
@@ -65,9 +76,10 @@ export class SoundService {
   }
 
   /**
-   * Buscar sonidos por título.
-   * @param termino Texto a buscar.
-   * @returns Observable con los sonidos filtrados.
+   * Motor de Búsqueda Local
+   * -----------------------------------------------------------------
+   * Nos permite filtrar nuestra lista de sonidos cargada en memoria
+   * según el término que el usuario escriba.
    */
   searchSounds(termino: string): Observable<Sound[]> {
     return this.getAllSounds().pipe(
@@ -79,3 +91,4 @@ export class SoundService {
     );
   }
 }
+

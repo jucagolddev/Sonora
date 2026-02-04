@@ -1,9 +1,11 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
  * Módulo: Servicio de Autenticación (Frontend)
- * Descripción: Gestiona la comunicación HTTP con el API de Usuarios.
- *              Mantiene el estado de la sesión (Login/Logout) usando RxJS.
+ * Descripción: En este servicio centralizamos toda la lógica de comunicación
+ *              con nuestro backend para temas de identidad. Gestionamos el 
+ *              inicio de sesión, el registro y la persistencia de la sesión
+ *              mediante el almacenamiento local de tokens (JWT).
  */
 
 import { Injectable } from '@angular/core';
@@ -12,12 +14,11 @@ import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
 
 // =================================================================
-// INTERFACES DEL SERVICIO
-// Definición de tipos de datos para las peticiones y respuestas.
+// INTERFACES DEL SERVICIO: Nuestra estructura de datos
 // =================================================================
 
 /**
- * Estructura de la respuesta del servidor tras autenticación.
+ * Respuesta del Servidor: Lo que nosotros esperamos recibir tras autenticarnos.
  */
 interface AuthResponse {
   mensaje: string;
@@ -28,42 +29,41 @@ interface AuthResponse {
 }
 
 /**
- * Datos requeridos para iniciar sesión o registrarse.
+ * Credenciales: Los datos que nosotros enviamos para identificarnos.
  */
 interface Credentials {
   email: string;
   password: string;
-  nombre_usuario?: string; // Opcional si solo es Login
+  nombre_usuario?: string; 
 }
 
 /**
  * SERVICIO DE AUTENTICACIÓN (AuthService)
  * ------------------------------------------------------------------
- * Gestiona toda la lógica relacionada con la seguridad del usuario:
- * - Login (Inicio de sesión)
- * - Registro
- * - Almacenamiento y gestión del Token JWT.
- * - Estado de la sesión (Observables para saber si el usuario está conectado).
+ * Este servicio es el corazón de la seguridad en nuestro frontend. 
+ * Nos permite saber en todo momento quién está usando la aplicación.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // Clave usada para persistir el token en LocalStorage
+  // Clave para guardar el token de forma persistente en el navegador
   private TOKEN_KEY = 'sonora_token';
 
-  // URL base de la API para gestión de usuarios
+  // Nuestra URL base para las peticiones de usuario
   private baseUrl = 'http://localhost:3000/api/usuarios';
 
   /**
-   * BehaviorSubject que mantiene el estado actual de la sesión (true/false).
-   * Permite a los componentes reaccionar reactivamente cuando el usuario entra o sale.
+   * Estado de la Sesión: 
+   * Utilizamos BehaviorSubject para que el resto de componentes puedan
+   * saber si nosotros hemos iniciado sesión o no.
    */
   private loggedIn = new BehaviorSubject<boolean>(this.checkLoginStatus());
 
   /**
-   * BehaviorSubject que mantiene los datos del usuario actual.
-   * Útil para mostrar el nombre del usuario en el Header, por ejemplo.
+   * Usuario Actual:
+   * Aquí guardamos los datos básicos del perfil (nombre, ID) para
+   * personalizár la interfaz de usuario.
    */
   private currentUserSubject = new BehaviorSubject<any>(
     this.getUserFromStorage()
@@ -72,40 +72,32 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   // -----------------------------------------------------------------
-  // GETTERS (Observables Públicos)
+  // ACCESO EXTERNO (Observables Públicos)
   // -----------------------------------------------------------------
 
-  /**
-   * Observable para saber si hay alguien conectado.
-   */
   get isLoggedIn$(): Observable<boolean> {
     return this.loggedIn.asObservable();
   }
 
-  /**
-   * Observable para obtener los datos del usuario conectado.
-   */
   get currentUser$(): Observable<any> {
     return this.currentUserSubject.asObservable();
   }
 
   // -----------------------------------------------------------------
-  // MÉTODOS PÚBLICOS (API Calls)
+  // ACCIONES PRINCIPALES
   // -----------------------------------------------------------------
 
   /**
-   * Iniciar Sesión en el servidor.
-   * POST /api/usuarios/login
-   *
-   * @param credentials Email y contraseña del usuario.
-   * @returns Observable con la respuesta del servidor (token y datos).
+   * Inicio de Sesión (Login)
+   * -----------------------------------------------------------------
+   * Enviamos las credenciales al backend y, si son correctas, nosotros
+   * guardamos el token de acceso recibido.
    */
   login(credentials: Credentials): Observable<AuthResponse> {
     const url = `${this.baseUrl}/login`;
 
     return this.http.post<AuthResponse>(url, credentials).pipe(
       tap((response) => {
-        // Al recibir el token, guardamos la sesión inmediatamente
         if (response.token) {
           this.setSession(
             response.token,
@@ -118,18 +110,16 @@ export class AuthService {
   }
 
   /**
-   * Registrar un nuevo usuario.
-   * POST /api/usuarios/registro
-   *
-   * @param userData Datos del formulario de registro.
-   * @returns Observable con la respuesta (token y datos).
+   * Registro de Nuevo Usuario
+   * -----------------------------------------------------------------
+   * Tramitamos el alta en nuestro sistema. Hemos configurado la app para
+   * que tras el registro, nosotros entremos directamente a Sonora.
    */
   register(userData: Credentials): Observable<AuthResponse> {
     const url = `${this.baseUrl}/registro`;
 
     return this.http.post<AuthResponse>(url, userData).pipe(
       tap((response) => {
-        // En esta app, al registrarse, se inicia sesión automáticamente
         if (response && response.token) {
           this.setSession(
             response.token,
@@ -142,8 +132,10 @@ export class AuthService {
   }
 
   /**
-   * Cerrar Sesión.
-   * Elimina el token y limpia el estado global de la aplicación.
+   * Cierre de Sesión (Logout)
+   * -----------------------------------------------------------------
+   * Eliminamos los datos de sesión para que nadie más pueda acceder 
+   * desde este navegador sin volver a identificarse.
    */
   logout() {
     localStorage.removeItem(this.TOKEN_KEY);
@@ -153,19 +145,21 @@ export class AuthService {
   }
 
   /**
-   * Obtiene el token JWT actual (Raw String).
-   * Útil para los Interceptores HTTP que adjuntan el token a las peticiones.
+   * Recuperar el Token
+   * Nosotros lo usamos para enviarlo en las cabeceras de peticiones seguras.
    */
   getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
   }
 
   // -----------------------------------------------------------------
-  // MÉTODOS PRIVADOS (Gestión Interna)
+  // GESTIÓN INTERNA (Privada)
   // -----------------------------------------------------------------
 
   /**
-   * Guarda la sesión en LocalStorage y actualiza los Subjects.
+   * Persistencia de Sesión
+   * Guardamos los datos en el LocalStorage para que la sesión no se 
+   * cierre al refrescar la página.
    */
   private setSession(
     token: string,
@@ -180,22 +174,16 @@ export class AuthService {
     };
     localStorage.setItem('sonora_current_user', JSON.stringify(userPayload));
 
-    // Notificar cambios al resto de la app
+    // Notificamos el cambio al resto de nuestra aplicación
     this.loggedIn.next(true);
     this.currentUserSubject.next(userPayload);
   }
 
-  /**
-   * Verifica al iniciar el servicio si existe un token guardado.
-   */
   private checkLoginStatus(): boolean {
     const token = this.getToken();
     return !!token;
   }
 
-  /**
-   * Recupera los datos del usuario del LocalStorage al recargar la página.
-   */
   private getUserFromStorage(): any {
     const user = localStorage.getItem('sonora_current_user');
     try {
@@ -205,4 +193,5 @@ export class AuthService {
     }
   }
 }
+
 
