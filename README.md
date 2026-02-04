@@ -161,6 +161,8 @@ npm install
 npx ts-node server.ts
 ```
 
+Tambien hay que importar la bd llamada sonora.sql sino no caragras los sonidos <3
+
 ### 3. Lanzamiento del Frontend
 
 ```bash
