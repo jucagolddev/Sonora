@@ -1,8 +1,9 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
  * Módulo: Rutas de Autenticación
- * Descripción: Endpoints relacionados con el ciclo de vida del usuario (Login/Registro).
+ * Descripción: En este archivo definimos los puntos de entrada (endpoints) 
+ *              relacionados con la gestión de cuentas de usuario.
  */
 
 import express from 'express';
@@ -11,19 +12,21 @@ import * as authController from '../controllers/auth_controller';
 const router = express.Router();
 
 /**
- * MÓDULO DE RUTAS: AUTENTICACIÓN
- * ------------------------------
- * Define los endpoints relacionados con la gestión de usuarios (Registro y Login).
+ * DEFINICIÓN DE ENDPOINTS: AUTENTICACIÓN
+ * -------------------------------------
+ * Aquí conectamos las rutas que nuestra aplicación frontend utilizará
+ * con la lógica que hemos programado en el controlador de usuarios.
  */
 
+// REGISTRO: Permite crear un nuevo perfil en Sonora
 // POST /api/usuarios/registro
-// Llama al controlador para registrar un nuevo usuario en el sistema.
 router.post('/registro', authController.registro);
 
+// ACCESO: Permite validar credenciales e iniciar sesión
 // POST /api/usuarios/login
-// Llama al controlador para iniciar sesión y obtener un Token JWT.
 router.post('/login', authController.login);
 
-// Exportar el router para ser montado en el servidor principal
+// Exportamos nuestro enrutador para que sea integrado en el servidor principal
 export default router;
+
 

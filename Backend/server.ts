@@ -1,14 +1,18 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
  * Módulo: Servidor Principal (Entry Point)
- * Descripción: Configuración e inicialización del servidor Express.
- *              Define middlewares globales, rutas y conexión a BD.
+ * Descripción: En este archivo configuramos e inicializamos nuestro servidor Express.
+ *              Como equipo de desarrollo, hemos establecido aquí los middlewares globales,
+ *              la gestión de rutas principales y la conexión base con nuestro entorno.
+ * 
+ * Nuestra aplicación actúa como un catálogo musical donde los usuarios pueden
+ * explorar, buscar y subir sonidos de libre uso.
  */
 
 import express, { Request, Response } from "express";
 import cors from "cors";
-import path from "path"; // Añadido para gestionar rutas de archivos
+import path from "path"; // Utilizamos path para la gestión consistente de rutas de archivos
 import authRoutes from "./routes/auth_routes";
 import archivosRoutes from "./routes/archivo_routes";
 import audioRoutes from "./routes/audio_routes";
@@ -16,77 +20,93 @@ import audioRoutes from "./routes/audio_routes";
 /**
  * Inicialización de la Aplicación Express
  * -------------------------------------------------------------------
- * Crea la instancia principal del servidor para gestionar las peticiones HTTP.
+ * Creamos la instancia principal de nuestro servidor para gestionar las peticiones HTTP
+ * que nuestra aplicación frontend (Angular) realizará.
  */
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // -----------------------------------------------------------------
-// MIDDLEWARES GLOBALES
+// CONFIGURACIÓN DE MIDDLEWARES GLOBALES
 // -----------------------------------------------------------------
 
 /**
- * Middleware: CORS
- * Permite que aplicaciones en otros dominios o puertos (como Angular en localhost:4200)
- * realicen peticiones a este servidor.
+ * Middleware: CORS (Cross-Origin Resource Sharing)
+ * Hemos activado CORS para permitir que nuestra aplicación frontend, que corre normalmente
+ * en el puerto 4200, pueda comunicarse sin restricciones con este backend en el puerto 3000.
  */
 app.use(cors());
 
 /**
  * Middleware: JSON Body Parser
- * Permite que el servidor entienda y procese datos en formato JSON que vienen en el body de las peticiones.
+ * Configuramos Express para que sea capaz de interpretar los cuerpos de las peticiones
+ * en formato JSON, lo cual es fundamental para el intercambio de datos en nuestra API REST.
  */
 app.use(express.json());
 
 /**
  * Middleware: Archivos Estáticos
- * Permite acceder a los archivos subidos (audio/video) desde el navegador.
- * Se añade configuración de caché para mejorar el rendimiento.
+ * Exponemos la carpeta 'archivos' para que los sonidos y medios subidos por los usuarios
+ * sean accesibles públicamente mediante una URL (ej. http://localhost:3000/archivos/nombre.mp3).
+ * Hemos añadido una configuración de caché para optimizar la carga de estos recursos.
  */
 app.use(
   "/archivos",
   express.static(path.join(__dirname, "archivos"), {
-    maxAge: "31536000", // 1 año en milisegundos
+    maxAge: "31536000", // Definimos un año de caché para recursos inmutables
     immutable: true,
   }),
 );
 
 // -----------------------------------------------------------------
-// CONEXIÓN DE RUTAS (ROUTING)
-// -----------------------------------------------------------------
-
-// Rutas para gestión de usuarios (Registro, Login)
-// Prefijo: /api/usuarios
-app.use("/api/usuarios", authRoutes);
-
-// Rutas para gestión de archivos (Subida de canciones)
-// Prefijo: /api/archivos
-app.use("/api/archivos", archivosRoutes);
-
-// Rutas para gestión de canciones (Listado, etc.)
-// Prefijo: /api/canciones
-app.use("/api/canciones", audioRoutes);
-
-// -----------------------------------------------------------------
-// Rutas de Prueba y Utilidad
+// DEFINICIÓN DE RUTAS (ROUTING)
 // -----------------------------------------------------------------
 
 /**
- * Endpoint Raíz
- * Verifica que el servidor está corriendo correctamente.
+ * Gestión de Usuarios y Autenticación
+ * Prefijo: /api/usuarios
+ * Aquí delegamos toda la lógica de registro, inicio de sesión y validación de credenciales.
+ */
+app.use("/api/usuarios", authRoutes);
+
+/**
+ * Gestión de Subida de Archivos
+ * Prefijo: /api/archivos
+ * Este módulo se encarga del procesamiento físico de los archivos multimedia que recibimos.
+ */
+app.use("/api/archivos", archivosRoutes);
+
+/**
+ * Catálogo y Listado de Canciones
+ * Prefijo: /api/canciones
+ * Rutas destinadas a la recuperación de metadatos de los sonidos almacenados.
+ */
+app.use("/api/canciones", audioRoutes);
+
+// -----------------------------------------------------------------
+// CONTROL DE ESTADO DEL SERVIDOR
+// -----------------------------------------------------------------
+
+/**
+ * Endpoint Raíz: Verificación de Estado (Health Check)
+ * Implementamos esta ruta para verificar de forma rápida que nuestro servidor
+ * está operativo y listo para recibir tráfico.
  */
 app.get("/", (req: Request, res: Response) => {
   res.status(200).json({
-    mensaje: "API de Sonora funcionando. Lista para recibir peticiones.",
-    estado: "OK",
+    mensaje: "API de Sonora operativa y funcionando correctamente.",
+    estudiantes: "Grupo de Desarrollo de Sonora",
+    estado: "Ejecutándose",
     version: "1.0.0",
   });
 });
 
-// -----------------------------------------------------------------
-// INICIAR EL SERVIDOR
-// -----------------------------------------------------------------
+/**
+ * Arranque del Servidor
+ * Ponemos nuestro servidor a la escucha en el puerto configurado.
+ */
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor Express escuchando en http://localhost:${PORT}`);
-  console.log(`📡 Esperando peticiones de Angular...`);
+  console.log(`🚀 Nuestro servidor Express está escuchando en http://localhost:${PORT}`);
+  console.log(`📡 Preparados para recibir peticiones desde el Frontend.`);
 });
+

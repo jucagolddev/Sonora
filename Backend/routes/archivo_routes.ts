@@ -1,9 +1,10 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
  * Módulo: Rutas de Archivos
- * Descripción: Define los endpoints relacionados con la gestión multimedia (subidas).
- *              Protege las rutas mediante middlewares de autenticación.
+ * Descripción: En este enrutador gestionamos los accesos para la subida
+ *              de material multimedia a nuestra plataforma.
+ *              Hemos asegurado estas rutas mediante la validación de tokens JWT.
  */
 
 import express from 'express';
@@ -13,12 +14,14 @@ import { verificarToken } from '../middleware/auth_middleware';
 const router = express.Router();
 
 /**
- * Endpoint de Subida de Archivos
- * RUTA: POST /api/archivos/subir
- *
- * Middleware: verificarToken (Requiere Estar Logueado)
- * Función: Permite a un usuario autenticado subir un archivo de audio.
+ * SUBIDA DE MATERIAL: POST /api/archivos/subir
+ * -------------------------------------------
+ * Esta ruta permite a los usuarios que han iniciado sesión compartir 
+ * sus propios sonidos en Sonora. 
+ * El middleware 'verificarToken' nos asegura que solo usuarios 
+ * registrados puedan realizar esta acción.
  */
 router.post('/subir', verificarToken, archivoController.subirArchivo);
 
 export default router;
+

@@ -1,9 +1,11 @@
 /**
- * ARQUITECTURA DE SOFTWARE - SONORA V2
+ * PROYECTO SONORA - ARQUITECTURA DE SOFTWARE
  * -------------------------------------------------------------------
  * Módulo: Controlador de Autenticación
- * Descripción: Gestiona el registro y login de usuarios.
- *              Implementa seguridad con Bcrypt y JWT.
+ * Descripción: En este módulo hemos desarrollado la lógica para gestionar el ciclo
+ *              de vida de los usuarios, incluyendo su registro y el inicio de sesión.
+ *              Para garantizar la seguridad, implementamos el cifrado de contraseñas
+ *              con Bcrypt y la gestión de sesiones mediante JSON Web Tokens (JWT).
  */
 
 import { Request, Response } from 'express';
@@ -17,96 +19,96 @@ dotenv.config();
 /**
  * Generador de Tokens JWT
  * -------------------------------------------------------------------
- * Crea un JSON Web Token (JWT) firmado con una clave secreta.
- * @param usuario Objeto usuario que contiene la información a incluir en el payload.
- * @returns {string} El token JWT generado (string).
+ * Hemos diseñado esta función para crear un token de acceso seguro que nuestra
+ * aplicación utilizará para identificar al usuario en peticiones futuras.
+ * @param usuario Objeto con la información básica que queremos incluir en el token.
+ * @returns {string} El token JWT firmado.
  */
 const generarToken = (usuario: any) => {
-    // Datos que queremos incluir en el token (Payload)
+    // Definimos el payload con los datos identificativos del usuario
     const payload = {
         id: usuario.id_usuario,
         nombre_usuario: usuario.nombre_usuario,
         es_administrador: usuario.es_administrador
     };
-    // Combinar el token con la clave secreta y definir la expiración
-    const secret = process.env.SECRET_KEY || 'secreto_super_seguro'; // Fallback por seguridad
+    
+    // Obtenemos nuestra clave secreta desde el entorno para mayor seguridad
+    const secret = process.env.SECRET_KEY || 'secreto_universitario_sonora';
+    
+    // Firmamos el token con una expiración de un día
     return jwt.sign(
         payload,
         secret,
-        { expiresIn: '1d' }    // El token valida por 24 horas
+        { expiresIn: '1d' }
     );
 };
 
 // -----------------------------------------------------------------
-// CONTROLADOR DE AUTENTICACIÓN
+// OPERACIONES DE USUARIO
 // -----------------------------------------------------------------
 
 /**
- * Registro de Nuevo Usuario
+ * Registro de Nuevos Usuarios
  * ------------------------------------------------------------------
  * Endpoint: /api/usuarios/registro
  * Método: POST
  *
- * Responsabilidad:
- * 1. Validar que se reciban email, nombre_usuario y password.
- * 2. Verificar que el usuario no exista previamente en la base de datos.
- * 3. Hashear la contraseña usando bcryptjs para seguridad.
- * 4. Guardar el nuevo usuario en la base de datos MySQL.
- * 5. Generar un JWT inicial para que el usuario quede logueado automáticamente.
- *
- * @param req Objeto de solicitud (Express Request).
- * @param res Objeto de respuesta (Express Response).
+ * En este proceso seguimos los siguientes pasos:
+ * 1. Validamos que nosotros recibamos todos los campos necesarios.
+ * 2. Comprobamos en nuestra base de datos que el usuario no exista previamente.
+ * 3. Aplicamos un hash seguro a la contraseña para que nunca se guarde en texto plano.
+ * 4. Insertamos los datos en la tabla 'Usuarios' de nuestro esquema.
+ * 5. Devolvemos un token para que el usuario pueda empezar a usar la app de inmediato.
  */
 export const registro = async (req: Request, res: Response) => {
     const { nombre_usuario, email, password } = req.body;
 
-    // 1. Validación de campos obligatorios
+    // Validación: Nos aseguramos de tener nombre, email y contraseña
     if (!nombre_usuario || !email || !password) {
-        return res.status(400).json({ mensaje: 'Faltan campos obligatorios: nombre_usuario, email y password.' });
+        return res.status(400).json({ mensaje: 'Faltan campos obligatorios para el registro.' });
     }
 
     try {
-        // 2. Verificar si el usuario ya existe (por email o nombre de usuario)
+        // Consultamos si el usuario ya está en nuestro sistema
         const [existeUsuario]: any = await db.query(
             'SELECT id_usuario FROM Usuarios WHERE email = ? OR nombre_usuario = ?',
             [email, nombre_usuario]
         );
 
         if (existeUsuario.length > 0) {
-            return res.status(409).json({ mensaje: 'El email o el nombre de usuario ya se encuentra en uso.' });
+            return res.status(409).json({ mensaje: 'Lo sentimos, este usuario o email ya está en uso.' });
         }
 
-        // 3. Cifrado (Hashing) de la contraseña
+        // Proceso de cifrado: Generamos un salt y hasheamos la clave
         const salt = await bcrypt.genSalt(10);
         const password_hash = await bcrypt.hash(password, salt);
 
-        // 4. Inserción en Base de Datos
+        // Guardado en la base de datos
         const [resultado]: any = await db.query(
             'INSERT INTO Usuarios (nombre_usuario, email, password_hash, fecha_registro) VALUES (?, ?, ?, NOW())',
             [nombre_usuario, email, password_hash]
         );
 
-        // --- Crear objeto de usuario para respuesta y token ---
+        // Creamos el perfil temporal para la respuesta
         const nuevoUsuario = {
             id_usuario: resultado.insertId,
             nombre_usuario: nombre_usuario,
             es_administrador: 0
         };
 
-        // 5. Generar Token JWT
+        // Generamos el token de bienvenida
         const token = generarToken(nuevoUsuario);
 
-        // Respuesta Exitosa (201 Created)
+        // Informamos del éxito y enviamos el token
         res.status(201).json({
-            mensaje: 'Usuario registrado correctamente. Sesión iniciada.',
+            mensaje: '¡Te has unido a Sonora correctamente! Tu sesión ha comenzado.',
             token: token,
-            usuario: nuevoUsuario,
-            id_usuario: nuevoUsuario.id_usuario
+            usuario: nuevoUsuario
         });
 
     } catch (error) {
-        console.error('Error en el registro:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor al registrar el usuario.' });
+        console.error('Error durante el proceso de registro de nuestro equipo:', error);
+        res.status(500).json({ mensaje: 'Hubo un error interno en nuestro servidor al tramitar tu registro.' });
     }
 };
 
@@ -116,24 +118,22 @@ export const registro = async (req: Request, res: Response) => {
  * Endpoint: /api/usuarios/login
  * Método: POST
  *
- * Responsabilidad:
- * 1. Buscar al usuario por su email.
- * 2. Comparar la contraseña enviada con el hash almacenado usando bcrypt.compare.
- * 3. Si es correcto, actualizar la fecha de 'ultima_sesion'.
- * 4. Generar y devolver un token JWT para autenticación en futuras peticiones.
- *
- * @param req Objeto de solicitud (Express Request).
- * @param res Objeto de respuesta (Express Response).
+ * Pasos que seguimos para autenticar:
+ * 1. Recuperamos el usuario registrado mediante su dirección de correo.
+ * 2. Comparamos la contraseña enviada con nuestro hash guardado.
+ * 3. Si coinciden, registramos el momento de la sesión.
+ * 4. Entregamos un nuevo JWT para autorizar sus acciones en la plataforma.
  */
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
+    // Verificamos que se han enviado las credenciales
     if (!email || !password) {
-        return res.status(400).json({ mensaje: 'Faltan campos obligatorios: email y password.' });
+        return res.status(400).json({ mensaje: 'Por favor, introduce tu email y contraseña.' });
     }
 
     try {
-        // 1. Buscar el usuario por email
+        // Buscamos el registro en nuestra tabla Usuarios
         const [usuarios]: any = await db.query(
             'SELECT id_usuario, nombre_usuario, password_hash, es_administrador FROM Usuarios WHERE email = ?',
             [email]
@@ -141,35 +141,29 @@ export const login = async (req: Request, res: Response) => {
 
         const usuario = usuarios[0];
 
-        // 2. Verificar si el usuario existe
-        if (!usuario) {
-            return res.status(401).json({ mensaje: 'Credenciales inválidas.' });
+        // Validamos la existencia del usuario y la integridad de la contraseña
+        if (!usuario || !(await bcrypt.compare(password, usuario.password_hash))) {
+            return res.status(401).json({ mensaje: 'Las credenciales que has introducido no son correctas.' });
         }
 
-        // 3. Comparar contraseñas (Texto plano vs Hash)
-        const esValida = await bcrypt.compare(password, usuario.password_hash);
-
-        if (!esValida) {
-            return res.status(401).json({ mensaje: 'Credenciales inválidas.' });
-        }
-
-        // 4. Actualizar registro de sesión
+        // Actualizamos la fecha de su última entrada a Sonora
         await db.query('UPDATE Usuarios SET ultima_sesion = NOW() WHERE id_usuario = ?', [usuario.id_usuario]);
 
-        // 5. Generar Token JWT
+        // Generamos el token de sesión activa
         const token = generarToken(usuario);
 
-        // Respuesta Exitosa
+        // Enviamos la respuesta positiva con los datos necesarios para el frontend
         res.status(200).json({
-            mensaje: 'Login exitoso.',
-            token: token, // IMPORTANTE: El frontend debe almacenar este token
+            mensaje: 'Has iniciado sesión correctamente en Sonora.',
+            token: token,
             id_usuario: usuario.id_usuario,
             nombre_usuario: usuario.nombre_usuario
         });
 
     } catch (error) {
-        console.error('Error en el login:', error);
-        res.status(500).json({ mensaje: 'Error interno del servidor al iniciar sesión.' });
+        console.error('Error en el proceso de login de nuestra app:', error);
+        res.status(500).json({ mensaje: 'Nuestro servidor ha tenido un problema al procesar tu acceso.' });
     }
 };
+
 

@@ -47,6 +47,13 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.cargarDatos();
   }
 
+  ngAfterViewInit(): void {
+      if (this.heroVideo && this.heroVideo.nativeElement) {
+          this.heroVideo.nativeElement.muted = true;
+          this.heroVideo.nativeElement.volume = 0;
+      }
+  }
+
   ngOnDestroy(): void {}
 
   /**
